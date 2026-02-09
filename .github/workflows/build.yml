@@ -28,16 +28,6 @@ jobs:
     - name: Run unit tests (if exist)
       run: dotnet test src/DynamicNetwork.sln --configuration Release --no-build --verbosity normal
       continue-on-error: true
-      
-    - name: Publish application
-      run: dotnet publish src/Presentation/DynamicNetwork.Presentation.csproj --configuration Release --output ./publish
-      
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: DynamicNetwork-build
-        path: ./publish/
-        retention-days: 30
         
     - name: Check architecture compliance
       run: |

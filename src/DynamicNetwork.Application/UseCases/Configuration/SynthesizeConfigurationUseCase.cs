@@ -61,19 +61,22 @@ public class SynthesizeConfigurationUseCase : ISynthesizeConfigurationUseCase
         };
 
         var domainPaths = reachabilityResult.AllPaths
-            .Select(dto => new ReachabilityPath
-            {
-                Nodes = dto.Path.AsReadOnly(),
-                GraphIndices = dto.GraphIndices.AsReadOnly(),
-                Edges = dto.Edges.Select(e => new EdgeTraversal
-                {
-                    FromNode = e.FromNode,
-                    ToNode = e.ToNode,
-                    GraphIndex = e.GraphIndex,
-                    Link = new Link(e.FromNode, e.ToNode)
-                }).ToList().AsReadOnly(),
-                Interval = dto.Interval
-            })
+            .Select(dto =>
+            new ReachabilityPath(
+                dto.Path.AsReadOnly(),
+                dto.GraphIndices.AsReadOnly(),
+                dto.Edges.Select(e => 
+                    new EdgeTraversal 
+                    {
+                        FromNode = e.FromNode,
+                        ToNode = e.ToNode,
+                        GraphIndex = e.GraphIndex,
+                        Link = new Link(e.FromNode, e.ToNode) 
+                    })
+                .ToList()
+                .AsReadOnly(),
+                dto.Interval)
+            )
             .ToList();
 
         var synthesizedConfigs = _synthesisService.SynthesizeAll(

@@ -61,7 +61,9 @@ public class SynthesisDomainService : ISynthesisDomainService
         var intervals = paths
             .Select(p => p.Interval)
             .Where(i => i != TimeInterval.Empty)
-            .Distinct();
+            .Distinct()
+            .OrderBy(i => i.Start)
+            .ToList();
 
         foreach (var interval in intervals)
         {
@@ -89,8 +91,8 @@ public class SynthesisDomainService : ISynthesisDomainService
 
     private List<FlowRoutePlan> PlanFlowRoutes(
         DataFlow flow,
-        IReadOnlyList<ReachabilityPath> allPaths, // ← ИСПРАВЛЕНО: доменный тип
-        StructConfigurationSynthesisRequest request, // ← ИСПРАВЛЕНО: доменный тип
+        IReadOnlyList<ReachabilityPath> allPaths,
+        StructConfigurationSynthesisRequest request,
         Dictionary<TimeInterval, StructConfiguration> intervalToBaseConfig)
     {
         var plans = new List<FlowRoutePlan>();
