@@ -2,7 +2,11 @@ name: Build and Deploy DynamicNetwork
 
 on:
   push:
-    branches: [ master ] 
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
 
 jobs:
   build-and-publish:
@@ -26,9 +30,18 @@ jobs:
     - name: Publish application
       run: dotnet publish src/DynamicNetwork.Presentation/DynamicNetwork.Presentation.csproj --configuration Release --output ./publish --runtime win-x64 --self-contained true
       
-    - name: Upload executable artifact
-      uses: actions/upload-artifact@v4
+    - name: Zip published files
+      run: Compress-Archive -Path ./publish/* -DestinationPath ./DynamicNetwork-${{ github.ref_name }}-win-x64.zip
+      shell: pwsh
+      
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
       with:
-        name: DynamicNetwork-Windows-x64
-        path: ./publish/
-        retention-days: 30
+        name: Release ${{ github.ref_name }}
+        generate_release_notes: true
+        draft: false
+        prerelease: false
+        files: |
+          ./DynamicNetwork-${{ github.ref_name }}-win-x64.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
