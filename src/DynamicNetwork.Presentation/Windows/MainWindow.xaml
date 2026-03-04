@@ -17,7 +17,6 @@
         <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
         <converters:LinkDirectionToArrowConverter x:Key="LinkDirectionToArrowConverter"/>
         <converters:CollectionToStringConverter x:Key="CollectionToStringConverter"/>
-        <converters:TransformationsToStringConverter x:Key="TransformationsToStringConverter"/>
         <converters:PathToStringConverter x:Key="PathToStringConverter"/>
         <converters:NullOrEmptyToVisibilityConverter x:Key="NullOrEmptyToVisibilityConverter"/>
         <converters:InverseNullToVisibilityConverter x:Key="InverseNullToVisibilityConverter"/>
@@ -1493,7 +1492,7 @@
                                 </StackPanel>
                             </ScrollViewer>
                         </TabItem>
-                        <TabItem Header="Потоки данных" 
+                        <TabItem Header="Типы потоков" 
                                  Style="{StaticResource ModernTabItemStyle}">
                             <ScrollViewer Style="{StaticResource CustomScrollViewerStyle}">
                                 <StackPanel Margin="20">
@@ -1505,7 +1504,7 @@
                                                       Width="25"
                                                       Height="25"
                                                       Margin="0,0,8,0"/>
-                                                <TextBlock Text="Управление потоками данных"
+                                                <TextBlock Text="Управление типами потоков"
                                                            FontWeight="SemiBold"
                                                            FontSize="14"
                                                            Foreground="#2C3E50"/>
@@ -1518,44 +1517,18 @@
                                                 </Grid.ColumnDefinitions>
 
                                                 <StackPanel Grid.Column="0" Margin="0,0,10,0">
-                                                    <TextBlock Text="ID потока:"
+                                                    <TextBlock Text="ID типа потока:"
                                                                FontWeight="Medium"
                                                                Foreground="#2C3E50"
                                                                Margin="0,0,0,4"/>
-                                                    <TextBox Text="{Binding DataFlowViewModel.DataFlowId, UpdateSourceTrigger=PropertyChanged}"
-                                                             Style="{StaticResource ModernTextBoxStyle}"
-                                                             Margin="0,0,0,12"/>
-
-                                                    <TextBlock Text="Объем:"
-                                                               FontWeight="Medium"
-                                                               Foreground="#2C3E50"
-                                                               Margin="0,0,0,4"/>
-                                                    <TextBox Text="{Binding DataFlowViewModel.DataFlowVolume, UpdateSourceTrigger=LostFocus}"
+                                                    <TextBox Text="{Binding LibraryViewModel.FlowId, UpdateSourceTrigger=PropertyChanged}"
                                                              Style="{StaticResource ModernTextBoxStyle}"
                                                              Margin="0,0,0,12"/>
                                                 </StackPanel>
 
                                                 <StackPanel Grid.Column="1" Margin="10,0,0,0">
-                                                    <TextBlock Text="Преобразования:"
-                                                               FontWeight="Medium"
-                                                               Foreground="#2C3E50"
-                                                               Margin="0,0,0,4"/>
-                                                    <TextBox Text="{Binding DataFlowViewModel.DataFlowTransformations, UpdateSourceTrigger=PropertyChanged}"
-                                                             Style="{StaticResource ModernTextBoxStyle}"
-                                                             Height="80"
-                                                             TextWrapping="Wrap"
-                                                             AcceptsReturn="True"
-                                                             VerticalScrollBarVisibility="Auto"
-                                                             Margin="0,0,0,12"/>
-
-                                                    <TextBlock Text="(формат: вход1->выход1; вход2->выход2)"
-                                                               FontStyle="Italic"
-                                                               Foreground="#95A5A6"
-                                                               FontSize="11"
-                                                               Margin="0,-8,0,12"/>
-
                                                     <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
-                                                        <Button Command="{Binding DataFlowViewModel.AddDataFlowCommand}"
+                                                        <Button Command="{Binding LibraryViewModel.AddFlowCommand}"
                                                                 Height="30"
                                                                 Content="Добавить"
                                                                 Padding="12,8"
@@ -1563,22 +1536,14 @@
                                                                 Margin="0,0,8,0"
                                                                 Style="{StaticResource ModernIconButtonStyle}"/>
 
-                                                        <Button Command="{Binding DataFlowViewModel.UpdateDataFlowCommand}"
-                                                                Height="30"
-                                                                Content="Обновить"
-                                                                Padding="12,8"
-                                                                HorizontalAlignment="Left"
-                                                                Margin="0,0,8,0"
-                                                                Style="{StaticResource ModernIconButtonStyle}"/>
-
-                                                        <Button Command="{Binding DataFlowViewModel.RemoveDataFlowCommand}"
+                                                        <Button Command="{Binding LibraryViewModel.RemoveFlowCommand}"
                                                                 Height="30"
                                                                 Content="Удалить"
                                                                 Padding="12,8"
                                                                 HorizontalAlignment="Left"
                                                                 Style="{StaticResource ModernIconButtonStyle}"
-                                                                Foreground="White"
                                                                 Background="#E74C3C"
+                                                                Foreground="White"
                                                                 BorderBrush="#C0392B"/>
                                                     </StackPanel>
                                                 </StackPanel>
@@ -1594,7 +1559,7 @@
                                                       Width="25"
                                                       Height="25"
                                                       Margin="0,0,8,0"/>
-                                                <TextBlock Text="Доступные потоки данных"
+                                                <TextBlock Text="Доступные типы потоков"
                                                            FontWeight="SemiBold"
                                                            FontSize="14"
                                                            Foreground="#2C3E50"/>
@@ -1605,8 +1570,8 @@
                                                     BorderBrush="#E1E8ED"
                                                     BorderThickness="1"
                                                     Height="300">
-                                                <ListBox ItemsSource="{Binding DataFlowViewModel.DataFlows}"
-                                                         SelectedItem="{Binding DataFlowViewModel.SelectedDataFlow}"
+                                                <ListBox ItemsSource="{Binding LibraryViewModel.Flows}"
+                                                         SelectedItem="{Binding LibraryViewModel.SelectedFlow}"
                                                          Background="Transparent"
                                                          BorderThickness="0">
                                                     <ListBox.ItemTemplate>
@@ -1635,19 +1600,6 @@
                                                                                    FontWeight="SemiBold"
                                                                                    Foreground="#2C3E50"
                                                                                    FontSize="13"/>
-
-                                                                        <TextBlock Text="{Binding Volume, StringFormat={}Объем: {0}}"
-                                                                                    Foreground="#7F8C8D"
-                                                                                    FontSize="11"
-                                                                                    Margin="0,2,0,0"/>
-
-                                                                        <TextBlock Text="{Binding Transformations, 
-                                                                                   Converter={StaticResource TransformationsToStringConverter}}"
-                                                                                   Foreground="#7F8C8D"
-                                                                                   FontSize="11"
-                                                                                   Margin="0,2,0,0"
-                                                                                   TextWrapping="Wrap"
-                                                                                   FontStyle="Italic"/>
                                                                     </StackPanel>
                                                                 </Grid>
                                                             </Border>
@@ -1656,7 +1608,7 @@
                                                 </ListBox>
                                             </Border>
 
-                                            <TextBlock Text="Выберите поток из списка для редактирования или удаления"
+                                            <TextBlock Text="Выберите тип потока из списка для редактирования или удаления"
                                                        FontStyle="Italic"
                                                        Foreground="#95A5A6"
                                                        Margin="0,10,0,0"

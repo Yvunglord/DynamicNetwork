@@ -32,20 +32,28 @@ public sealed class FunctionLibrary
     public IReadOnlyCollection<StorageType> Storages { get; }
 
     /// <summary>
+    /// Все доступные потоки (типы данных).
+    /// </summary>
+    public IReadOnlyCollection<FlowType> Flows { get; }
+
+    /// <summary>
     /// Инициализирует новый экземпляр <see cref="FunctionLibrary"/>.
     /// </summary>
     /// <param name="processes">Коллекция типов процессов.</param>
     /// <param name="transports">Коллекция типов транспорта.</param>
     /// <param name="storages">Коллекция типов хранилищ.</param>
+    /// <param name="flows">Коллекция типов потоков.</param>
     public FunctionLibrary(
         IEnumerable<ProcessType> processes,
         IEnumerable<TransportType> transports,
-        IEnumerable<StorageType> storages
+        IEnumerable<StorageType> storages,
+        IEnumerable<FlowType> flows
     )
     {
         Processes = processes.ToList().AsReadOnly();
         Transports = transports.ToList().AsReadOnly();
         Storages = storages.ToList().AsReadOnly();
+        Flows = flows.ToList().AsReadOnly();
     }
 
     /// <summary>
@@ -61,7 +69,7 @@ public sealed class FunctionLibrary
             .Concat(newProcesses.Where(p => !existingIds.Contains(p.Id)))
             .ToList();
 
-        return new FunctionLibrary(merged, Transports, Storages);
+        return new FunctionLibrary(merged, Transports, Storages, Flows);
     }
 
     /// <summary>
@@ -75,7 +83,7 @@ public sealed class FunctionLibrary
         var idsToRemove = new HashSet<string>(processIds);
         var filtered = Processes.Where(p => !idsToRemove.Contains(p.Id)).ToList();
 
-        return new FunctionLibrary(filtered, Transports, Storages);
+        return new FunctionLibrary(filtered, Transports, Storages, Flows);
     }
 
     /// <summary>
@@ -91,7 +99,7 @@ public sealed class FunctionLibrary
             .Concat(newTransports.Where(t => !existingIds.Contains(t.Id)))
             .ToList();
 
-        return new FunctionLibrary(Processes, merged, Storages);
+        return new FunctionLibrary(Processes, merged, Storages, Flows);
     }
 
     /// <summary>
@@ -105,7 +113,7 @@ public sealed class FunctionLibrary
         var idsToRemove = new HashSet<string>(transportIds);
         var filtered = Transports.Where(t => !idsToRemove.Contains(t.Id)).ToList();
 
-        return new FunctionLibrary(Processes, filtered, Storages);
+        return new FunctionLibrary(Processes, filtered, Storages, Flows);
     }
 
     /// <summary>
@@ -121,7 +129,7 @@ public sealed class FunctionLibrary
             .Concat(newStorages.Where(s => !existingIds.Contains(s.Id)))
             .ToList();
 
-        return new FunctionLibrary(Processes, Transports, merged); // Исправлено: merged вместо Storages
+        return new FunctionLibrary(Processes, Transports, merged, Flows);
     }
 
     /// <summary>
@@ -135,7 +143,25 @@ public sealed class FunctionLibrary
         var idsToRemove = new HashSet<string>(storageIds);
         var filtered = Storages.Where(s => !idsToRemove.Contains(s.Id)).ToList();
 
-        return new FunctionLibrary(Processes, Transports, filtered);
+        return new FunctionLibrary(Processes, Transports, filtered, Flows);
+    }
+
+    public FunctionLibrary AddFlows(IEnumerable<FlowType> newFlows)
+    {
+        var existingIds = new HashSet<string>(Flows.Select(f => f.Id));
+        var merged = Flows
+            .Concat(newFlows.Where(f => !existingIds.Contains(f.Id)))
+            .ToList();
+
+        return new FunctionLibrary(Processes, Transports, Storages, merged);
+    }
+
+    public FunctionLibrary RemoveFlows(IEnumerable<string> flowIds)
+    {
+        var idsToRemove = new HashSet<string>(flowIds);
+        var filtered = Flows.Where(f => !idsToRemove.Contains(f.Id)).ToList();
+
+        return new FunctionLibrary(Processes, Transports, Storages, filtered);
     }
 
     /// <summary>
@@ -158,7 +184,7 @@ public sealed class FunctionLibrary
             .Concat(updatedProcesses.Where(p => !existingIds.Contains(p.Id)))
             .ToList();
 
-        return new FunctionLibrary(result, Transports, Storages);
+        return new FunctionLibrary(result, Transports, Storages, Flows);
     }
 
     /// <summary>
@@ -181,7 +207,7 @@ public sealed class FunctionLibrary
             .Concat(updatedTransports.Where(t => !existingIds.Contains(t.Id)))
             .ToList();
 
-        return new FunctionLibrary(Processes, result, Storages);
+        return new FunctionLibrary(Processes, result, Storages, Flows);
     }
 
     /// <summary>
@@ -204,7 +230,22 @@ public sealed class FunctionLibrary
             .Concat(updatedStorages.Where(s => !existingIds.Contains(s.Id)))
             .ToList();
 
-        return new FunctionLibrary(Processes, Transports, result);
+        return new FunctionLibrary(Processes, Transports, result, Flows);
+    }
+
+    public FunctionLibrary UpdateFlows(IEnumerable<FlowType> updatedFlows)
+    {
+        if (updatedFlows == null) throw new ArgumentNullException(nameof(updatedFlows));
+
+        var updateDict = updatedFlows.ToDictionary(f => f.Id);
+        var existingIds = new HashSet<string>(Flows.Select(f => f.Id));
+
+        var result = Flows
+            .Select(f => updateDict.TryGetValue(f.Id, out var updated) ? updated : f)
+            .Concat(updatedFlows.Where(f => !existingIds.Contains(f.Id)))
+            .ToList();
+
+        return new FunctionLibrary(Processes, Transports, Storages, result);
     }
 
     /// <summary>
@@ -230,4 +271,7 @@ public sealed class FunctionLibrary
     /// <returns>Найденный StorageType или null, если не найден.</returns>
     public StorageType? GetStorageById(string id) =>
         Storages.FirstOrDefault(s => s.Id == id);
+
+    public FlowType? GetFlowById(string id) =>
+        Flows.FirstOrDefault(f => f.Id == id);
 }

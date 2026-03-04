@@ -26,7 +26,6 @@ public class MainViewModel : ViewModelBase
     private readonly IGraphSessionManager _graphSessionManager;
     private readonly IFunctionLibraryProvider _libraryProvider;
     private readonly IStructConfigurationRepository _configRepository;
-    private readonly IDataFlowRepository _flowRepository;
     private readonly ICheckReachabilityUseCase _reachabilityUseCase;
     private readonly IAnalyzeGraphStructureUseCase _analyzerUseCase;
     private readonly IExportConfigurationUseCase _exportUseCase;
@@ -42,7 +41,6 @@ public class MainViewModel : ViewModelBase
     private TopologyReachabilityViewModel? _reachabilityViewModel;
     private AnalysisResult? _analysisResult;
     private FunctionalLibraryViewModel? _libraryViewModel;
-    private DataFlowViewModel? _dataFlowViewModel;
     private StructConfigurationViewModel? _structConfigViewModel;
     private string? _currentSessionId;
 
@@ -108,19 +106,6 @@ public class MainViewModel : ViewModelBase
         }
     }
 
-    public DataFlowViewModel? DataFlowViewModel
-    {
-        get
-        {
-            if (_dataFlowViewModel == null)
-            {
-                _dataFlowViewModel = new DataFlowViewModel(this, _flowRepository);
-                OnPropertyChanged(nameof(DataFlowViewModel));
-            }
-            return _dataFlowViewModel;
-        }
-    }
-
     public StructConfigurationViewModel StructConfigViewModel
     {
         get
@@ -129,7 +114,6 @@ public class MainViewModel : ViewModelBase
                 _structConfigViewModel = new StructConfigurationViewModel(
                     this,
                     _configRepository,
-                    _flowRepository,
                     _editStructUseCase,
                     _libraryProvider
                 );
@@ -152,7 +136,6 @@ public class MainViewModel : ViewModelBase
         IGraphSessionManager graphSessionManager,
         IFunctionLibraryProvider libraryProvider,
         IStructConfigurationRepository configRepository,
-        IDataFlowRepository flowRepository,
         ICheckReachabilityUseCase reachabilityUseCase,
         IAnalyzeGraphStructureUseCase analyzerUseCase,
         IExportConfigurationUseCase exportUseCase,
@@ -169,7 +152,6 @@ public class MainViewModel : ViewModelBase
         _graphSessionManager = graphSessionManager;
         _libraryProvider = libraryProvider;
         _configRepository = configRepository;
-        _flowRepository = flowRepository;
         _reachabilityUseCase = reachabilityUseCase;
         _analyzerUseCase = analyzerUseCase;
         _exportUseCase = exportUseCase;
@@ -314,18 +296,11 @@ public class MainViewModel : ViewModelBase
     private void SynthesizeConfiguration()
     {
         var graphs = TemporalGraphs.ToList();
-        var flows = _flowRepository.GetAll().ToList();
         var library = _libraryProvider.GetCurrent();
 
         if (!graphs.Any())
         {
             _dialogService.ShowError("Необходимо загрузить временные графы");
-            return;
-        }
-
-        if (!flows.Any())
-        {
-            _dialogService.ShowError("Необходимо определить хотя бы один поток данных");
             return;
         }
 
@@ -398,7 +373,7 @@ public class MainViewModel : ViewModelBase
                 CustomInterval = customInterval
             };
 
-            var configs = _synthesizeUseCase.Execute(request, graphs, flows);
+            var configs = _synthesizeUseCase.Execute(request, graphs);
 
             foreach (var config in _configRepository.GetAll().ToList())
                 _configRepository.Delete(config.Interval);

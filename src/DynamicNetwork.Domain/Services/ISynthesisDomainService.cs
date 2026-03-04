@@ -28,7 +28,6 @@ public interface ISynthesisDomainService
     IReadOnlyList<StructConfiguration> SynthesizeAll(
         StructConfigurationSynthesisRequest request,
         IReadOnlyList<TemporalGraph> graphs,
-        IReadOnlyList<DataFlow> flows,
         FunctionLibrary functionLibrary,
         IReadOnlyList<StructConfiguration> baseConfigurations,
         IReadOnlyList<ReachabilityPath> reachablePaths);

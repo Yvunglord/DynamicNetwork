@@ -9,8 +9,7 @@ public class XmlConfigurationExportAdapter : IConfigurationExportService
 {
     public XDocument Export(
         IEnumerable<StructConfiguration> configurations,
-        FunctionLibrary library,
-        IEnumerable<DataFlow> flows)
+        FunctionLibrary library)
     {
         return new XDocument(
             new XDeclaration("1.0", "utf-8", null),
@@ -18,7 +17,7 @@ public class XmlConfigurationExportAdapter : IConfigurationExportService
                 new XAttribute("version", "1.0"),
                 new XElement("comment"),
                 new XElement("task",
-                    BuildFlows(flows),
+                    BuildFlows(library),
                     BuildProcesses(library),
                     BuildTransports(library),
                     BuildStorages(library),
@@ -31,17 +30,12 @@ public class XmlConfigurationExportAdapter : IConfigurationExportService
         );
     }
 
-    private XElement BuildFlows(IEnumerable<DataFlow> flows)
+    private XElement BuildFlows(FunctionLibrary library)
     {
-        var flowTypes = flows
-            .SelectMany(f => f.Transformations
-                .SelectMany(t => new[] { t.InputType, t.OutputType }))
-            .Distinct();
-
         return new XElement("flows",
-            flowTypes.Select(t =>
+            library.Flows.Select(f =>
                 new XElement("type",
-                    new XAttribute("id", t))));
+                    new XAttribute("id", f))));
     }
 
     private XElement BuildProcesses(FunctionLibrary library)

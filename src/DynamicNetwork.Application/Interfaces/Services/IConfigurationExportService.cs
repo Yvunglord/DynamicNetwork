@@ -8,6 +8,5 @@ public interface IConfigurationExportService
 {
     XDocument Export(
         IEnumerable<StructConfiguration> configurations,
-        FunctionLibrary library,
-        IEnumerable<DataFlow> flows);
+        FunctionLibrary library);
 }

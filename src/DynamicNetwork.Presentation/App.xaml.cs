@@ -1,6 +1,5 @@
 ﻿using DynamicNetwork.Application.Interfaces.Providers;
 using DynamicNetwork.Application.Interfaces.Repositories;
-using DynamicNetwork.Domain.Flows;
 using DynamicNetwork.Domain.Functions;
 using DynamicNetwork.Infrastructure.Adapters.VisualGraph;
 using DynamicNetwork.Infrastructure.DependencyInjection;
@@ -79,8 +78,6 @@ namespace DynamicNetwork.Presentation
                     $"{testLibrary.Transports.Count} транспортов, " +
                     $"{testLibrary.Storages.Count} хранилищ");
             }
-
-            PreloadTestDataFlows();
         }
 
         private FunctionLibrary CreateTestFunctionLibrary()
@@ -101,29 +98,13 @@ namespace DynamicNetwork.Presentation
                 new[]
                 {
                     new StorageType("1", new[] { "1", "2" })
+                },
+                new[]
+                {
+                    new FlowType("1"),
+                    new FlowType("2")
                 }
             );
-        }
-
-        private void PreloadTestDataFlows()
-        {
-            var flowRepo = _host.Services.GetRequiredService<IDataFlowRepository>();
-
-            if (!flowRepo.GetAll().Any())
-            {
-                var testFlows = new[]
-                {
-                    new DataFlow("flow1", 1.0, new[] { new FlowTransformation("1", "2") }),
-                    new DataFlow("flow2", 1.0, new[] { new FlowTransformation("1", "2") })
-                };
-
-                foreach (var flow in testFlows)
-                {
-                    flowRepo.Add(flow);
-                }
-
-                System.Diagnostics.Debug.WriteLine($"Предзагружено {testFlows.Length} потоков данных");
-            }
         }
     }
 }

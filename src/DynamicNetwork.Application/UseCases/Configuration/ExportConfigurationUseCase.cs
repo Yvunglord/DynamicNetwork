@@ -10,20 +10,17 @@ public class ExportConfigurationUseCase : IExportConfigurationUseCase
 {
     private readonly IConfigurationExportService _exportService;
     private readonly IStructConfigurationRepository _configRepo;
-    private readonly IDataFlowRepository _flowRepo;
     private readonly IFunctionLibraryProvider _libraryProvider;
     private readonly IFileStoragePort _fileStorage;
 
     public ExportConfigurationUseCase(
         IConfigurationExportService exportService,
         IStructConfigurationRepository configRepo,
-        IDataFlowRepository flowRepo,
         IFunctionLibraryProvider libraryProvider,
         IFileStoragePort fileStorage)
     {
         _exportService = exportService;
         _configRepo = configRepo;
-        _flowRepo = flowRepo;
         _libraryProvider = libraryProvider;
         _fileStorage = fileStorage;
     }
@@ -35,9 +32,8 @@ public class ExportConfigurationUseCase : IExportConfigurationUseCase
             throw new InvalidOperationException("No configurations to export");
 
         var library = _libraryProvider.GetCurrent();
-        var flows = _flowRepo.GetAll();
 
-        var document = _exportService.Export(configs, library, flows);
+        var document = _exportService.Export(configs, library);
 
         _fileStorage.SaveXml(document, outputPath);
     }

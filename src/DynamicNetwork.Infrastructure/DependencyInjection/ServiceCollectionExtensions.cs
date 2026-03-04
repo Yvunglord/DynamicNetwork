@@ -6,14 +6,12 @@ using DynamicNetwork.Application.Interfaces.Services;
 using DynamicNetwork.Application.Interfaces.Session;
 using DynamicNetwork.Application.Interfaces.UseCases.Analysis;
 using DynamicNetwork.Application.Interfaces.UseCases.Configuration;
-using DynamicNetwork.Application.Interfaces.UseCases.Flows;
 using DynamicNetwork.Application.Interfaces.UseCases.Graphs;
 using DynamicNetwork.Application.Interfaces.UseCases.Library;
 using DynamicNetwork.Application.Interfaces.UseCases.Reachability;
 using DynamicNetwork.Application.Session;
 using DynamicNetwork.Application.UseCases.Analysis;
 using DynamicNetwork.Application.UseCases.Configuration;
-using DynamicNetwork.Application.UseCases.Flows;
 using DynamicNetwork.Application.UseCases.Graphs;
 using DynamicNetwork.Application.UseCases.Library;
 using DynamicNetwork.Application.UseCases.Reachability;
@@ -43,7 +41,6 @@ public static class ServiceCollectionExtensions
         // Провайдеры и репозитории
         services.AddSingleton<IFunctionLibraryProvider, InMemoryFunctionLibraryProvider>();
         services.AddScoped<IStructConfigurationRepository, InMemoryStructConfigurationRepository>();
-        services.AddScoped<IDataFlowRepository, InMemoryDataFlowRepository>();
         services.AddScoped<IGraphSessionManager, GraphSessionManager>();
 
         // Фабрики и порты
@@ -59,7 +56,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IExportFunctionLibraryUseCase, ExportFunctionLibraryUseCase>();
         services.AddScoped<IManageStructConfigurationUseCase, ManageStructConfigurationUseCase>();
         services.AddScoped<IEditStructConfigurationUseCase, EditStructConfigurationUseCase>();
-        services.AddScoped<IManageDataFlowsUseCase, ManageDataFlowsUseCase>();
         services.AddScoped<ILoadTemporalGraphsUseCase, LoadTemporalGraphsUseCase>();
         services.AddScoped<ICheckReachabilityUseCase, CheckReachabilityUseCase>();
         services.AddScoped<IAnalyzeGraphStructureUseCase, AnalyzeGraphStructureUseCase>();

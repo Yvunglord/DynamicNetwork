@@ -13,7 +13,6 @@ public class StructConfigurationViewModel : ViewModelBase
 {
     private readonly MainViewModel _parent;
     private readonly IStructConfigurationRepository _configRepository;
-    private readonly IDataFlowRepository _flowRepository;
     private readonly IEditStructConfigurationUseCase _editUseCase;
     private readonly IFunctionLibraryProvider _libraryProvider;
 
@@ -89,13 +88,11 @@ public class StructConfigurationViewModel : ViewModelBase
     public StructConfigurationViewModel(
         MainViewModel parent,
         IStructConfigurationRepository configRepository,
-        IDataFlowRepository flowRepository,
         IEditStructConfigurationUseCase editUseCase,
         IFunctionLibraryProvider libraryProvider)
     {
         _parent = parent;
         _configRepository = configRepository;
-        _flowRepository = flowRepository;
         _editUseCase = editUseCase;
         _libraryProvider = libraryProvider;
     }
@@ -285,8 +282,8 @@ public class StructConfigurationViewModel : ViewModelBase
     private void LoadAvailableFlows()
     {
         AvailableFlows.Clear();
-        var flows = _flowRepository.GetAll();
-        foreach (var flow in flows)
+        var library = _libraryProvider.GetCurrent();
+        foreach (var flow in library.Flows)
         {
             AvailableFlows.Add(flow.Id);
         }
