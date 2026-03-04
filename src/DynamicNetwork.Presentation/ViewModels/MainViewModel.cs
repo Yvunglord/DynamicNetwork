@@ -7,7 +7,6 @@ using DynamicNetwork.Application.Interfaces.UseCases.Configuration;
 using DynamicNetwork.Application.Interfaces.UseCases.Graphs;
 using DynamicNetwork.Application.Interfaces.UseCases.Library;
 using DynamicNetwork.Application.Interfaces.UseCases.Reachability;
-using DynamicNetwork.Domain.Configuration;
 using DynamicNetwork.Domain.Enums;
 using DynamicNetwork.Domain.Graph;
 using DynamicNetwork.Infrastructure.Adapters.VisualGraph;
@@ -128,7 +127,6 @@ public class MainViewModel : ViewModelBase
     public ICommand MakeUndirectedCommand => new RelayCommand(MakeUndirected);
     public ICommand CycleDirectionCommand => new RelayCommand<Link>(CycleDirection);
     public ICommand ExportXmlCommand => new RelayCommand(ExportXml);
-    public ICommand SynthesizeConfigCommand => new RelayCommand(SynthesizeConfiguration);
 
     public MainViewModel(
         IDialogService dialogService,
@@ -292,105 +290,6 @@ public class MainViewModel : ViewModelBase
     }
 
     #endregion
-
-    private void SynthesizeConfiguration()
-    {
-        var graphs = TemporalGraphs.ToList();
-        var library = _libraryProvider.GetCurrent();
-
-        if (!graphs.Any())
-        {
-            _dialogService.ShowError("Необходимо загрузить временные графы");
-            return;
-        }
-
-        if (library.Processes.Count == 0 && library.Transports.Count == 0 && library.Storages.Count == 0)
-        {
-            _dialogService.ShowError("Необходимо загрузить библиотеку функций");
-            return;
-        }
-
-        try
-        {
-
-            var allConfigs = _configRepository.GetAll().ToList();
-
-            var nodeInputs = new Dictionary<NodeConfiguration, TimeInterval>();
-            var inputIntervals = new List<TimeInterval>();
-
-            foreach (var config in allConfigs)
-            {
-                foreach (var node in config.Nodes)
-                {
-                    if (node.InputsVolumes.Any(input => !string.IsNullOrWhiteSpace(input.Key)))
-                    {
-                        nodeInputs[node] = config.Interval;
-                        inputIntervals.Add(config.Interval);
-                    }
-                }
-            }
-
-            var outputNodes = new List<NodeConfiguration>();
-            var outputIntervals = new List<TimeInterval>();
-
-            foreach (var config in allConfigs)
-            {
-                foreach (var node in config.Nodes)
-                {
-                    if (node.Outputs.Any(output => !string.IsNullOrWhiteSpace(output)))
-                    {
-                        outputNodes.Add(node);
-                        outputIntervals.Add(config.Interval);
-                    }
-                }
-            }
-
-            if (!nodeInputs.Any())
-            {
-                _dialogService.ShowError(
-                    "Не найдены входные узлы!\n" +
-                    "Укажите входные типы данных (поле 'Входные типы') для хотя бы одного узла в конфигурации.");
-                return;
-            }
-
-            if (!outputNodes.Any())
-            {
-                _dialogService.ShowError(
-                    "Не найдены выходные узлы!\n" +
-                    "Укажите выходные типы данных (поле 'Выходные типы') для хотя бы одного узла в конфигурации.");
-                return;
-            }
-
-            var customInterval = new TimeInterval(
-                start: inputIntervals.Min(interval => interval.Start),
-                end: outputIntervals.Max(interval => interval.End)
-            );
-
-            var request = new StructConfigurationRequestDto
-            {
-                NodeInputs = nodeInputs,
-                OutputNodes = outputNodes,
-                CustomInterval = customInterval
-            };
-
-            var configs = _synthesizeUseCase.Execute(request, graphs);
-
-            foreach (var config in _configRepository.GetAll().ToList())
-                _configRepository.Delete(config.Interval);
-
-            foreach (var config in configs)
-                _configRepository.Add(config);
-
-            _dialogService.ShowInfo(
-                $"Синтез завершён успешно!\n" +
-                "Воспользуйтесь кнопкой Экспорт" + 
-                "чтобы сохранить результат в xml");
-        }
-        catch (Exception ex)
-        {
-            _dialogService.ShowError($"Ошибка синтеза конфигурации:\n{ex.Message}");
-        }
-    }
 
     private void ExportXml()
     {

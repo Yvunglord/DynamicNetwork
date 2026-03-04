@@ -70,13 +70,6 @@
                       DisplayMemberPath="Interval"
                       Width="200"
                       Style="{StaticResource ModernComboBoxStyle}"/>
-                
-                <Separator Width="1" Height="20" Background="#E0E0E0" Margin="5,0"/>
-                <Button Content="Синтезировать" 
-                        Width="150"
-                        Command="{Binding SynthesizeConfigCommand}"
-                        Style="{StaticResource ModernIconButtonStyle}"
-                        ToolTip="Синтезировать конфигурацию на основе загруженных данных"/>
 
                 <Separator Width="1" Height="20" Background="#E0E0E0" Margin="5,0"/>
 
@@ -1970,26 +1963,6 @@
                                             </ScrollViewer>
                                         </Grid>
                                     </Border>
-
-                                    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,10,0,0">
-                                        <Button Command="{Binding StructConfigViewModel.AddNodeConfigCommand}"
-                                Height="30"
-                                Content="Добавить узел"
-                                Padding="12,8"
-                                HorizontalAlignment="Left"
-                                Margin="0,0,8,0"
-                                Style="{StaticResource ModernIconButtonStyle}"/>
-
-                                        <Button Command="{Binding StructConfigViewModel.RemoveNodeConfigCommand}"
-                                Height="30"
-                                Content="Удалить узел"
-                                Padding="12,8"
-                                HorizontalAlignment="Left"
-                                Style="{StaticResource ModernIconButtonStyle}"
-                                Background="#E74C3C"
-                                Foreground="White"
-                                BorderBrush="#C0392B"/>
-                                    </StackPanel>
                                 </Grid>
                             </Border>
 
@@ -2004,22 +1977,22 @@
 
                                     <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
                                         <Path Data="M12,2 L2,12 L12,22 L22,12 Z M7,7 L17,17 M7,17 L17,7"
-                              Fill="#9B59B6"
-                              Width="25"
-                              Height="25"
-                              Margin="0,0,8,0"/>
+                                              Fill="#9B59B6"
+                                              Width="25"
+                                              Height="25"
+                                              Margin="0,0,8,0"/>
                                         <TextBlock Text="Конфигурации соединений"
-                                   FontWeight="SemiBold"
-                                   FontSize="14"
-                                   Foreground="#2C3E50"/>
+                                                   FontWeight="SemiBold"
+                                                   FontSize="14"
+                                                   Foreground="#2C3E50"/>
                                     </StackPanel>
 
                                     <Border Grid.Row="1" 
-                            Background="#F8F9FA"
-                            CornerRadius="4"
-                            BorderBrush="#E1E8ED"
-                            BorderThickness="1"
-                            Height="300">
+                                            Background="#F8F9FA"
+                                            CornerRadius="4"
+                                            BorderBrush="#E1E8ED"
+                                            BorderThickness="1"
+                                            Height="300">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
@@ -2027,23 +2000,23 @@
                                             </Grid.ColumnDefinitions>
 
                                             <ListBox Grid.Column="0"
-                                     ItemsSource="{Binding StructConfigViewModel.LinkConfigurations}"
-                                     SelectedItem="{Binding StructConfigViewModel.SelectedLinkConfig}"
-                                     Background="Transparent"
-                                     BorderThickness="0"
-                                     BorderBrush="#E1E8ED">
+                                                     ItemsSource="{Binding StructConfigViewModel.LinkConfigurations}"
+                                                     SelectedItem="{Binding StructConfigViewModel.SelectedLinkConfig}"
+                                                     Background="Transparent"
+                                                     BorderThickness="0"
+                                                     BorderBrush="#E1E8ED">
                                                 <ListBox.ItemTemplate>
                                                     <DataTemplate>
                                                         <Border Background="#FFFFFF"
-                                                CornerRadius="2"
-                                                BorderBrush="#E1E8ED"
-                                                BorderThickness="1"
-                                                Padding="8"
-                                                Margin="2">
+                                                                CornerRadius="2"
+                                                                BorderBrush="#E1E8ED"
+                                                                BorderThickness="1"
+                                                                Padding="8"
+                                                                Margin="2">
                                                             <TextBlock>
-                                                <Run Text="{Binding NodeA}" FontWeight="SemiBold"/>
-                                                <Run Text=" ↔ "/>
-                                                <Run Text="{Binding NodeB}" FontWeight="SemiBold"/>
+                                                                <Run Text="{Binding NodeA}" FontWeight="SemiBold"/>
+                                                                <Run Text=" ↔ "/>
+                                                                <Run Text="{Binding NodeB}" FontWeight="SemiBold"/>
                                                             </TextBlock>
                                                         </Border>
                                                     </DataTemplate>
@@ -2053,10 +2026,10 @@
                                             <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
                                                 <StackPanel Margin="10">
                                                     <TextBlock Text="Настройки соединения"
-                                               FontWeight="Medium"
-                                               FontSize="13"
-                                               Foreground="#2C3E50"
-                                               Margin="0,0,0,10"/>
+                                                               FontWeight="Medium"
+                                                               FontSize="13"
+                                                               Foreground="#2C3E50"
+                                                               Margin="0,0,0,10"/>
 
                                                     <Grid Margin="0,0,0,12">
                                                         <Grid.ColumnDefinitions>
@@ -2065,25 +2038,25 @@
                                                         </Grid.ColumnDefinitions>
                                                         <StackPanel Grid.Column="0" Margin="0,0,10,0">
                                                             <TextBlock Text="Узел A:"
-                                                       FontWeight="Medium"
-                                                       Foreground="#2C3E50"
-                                                       Margin="0,0,0,4"/>
+                                                                       FontWeight="Medium"
+                                                                       Foreground="#2C3E50"
+                                                                       Margin="0,0,0,4"/>
                                                             <TextBlock Text="{Binding StructConfigViewModel.SelectedLinkConfig.NodeA, UpdateSourceTrigger=PropertyChanged}"/>
                                                         </StackPanel>
                                                         <StackPanel Grid.Column="1">
                                                             <TextBlock Text="Узел B:"
-                                                       FontWeight="Medium"
-                                                       Foreground="#2C3E50"
-                                                       Margin="0,0,0,4"/>
+                                                                       FontWeight="Medium"
+                                                                       Foreground="#2C3E50"
+                                                                       Margin="0,0,0,4"/>
                                                             <TextBlock Text="{Binding StructConfigViewModel.SelectedLinkConfig.NodeB, UpdateSourceTrigger=PropertyChanged}"/>
                                                         </StackPanel>
                                                     </Grid>
 
                                                     <StackPanel>
                                                         <TextBlock Text="Разрешенные транспорты:"
-                                                   FontWeight="Medium"
-                                                   Foreground="#2C3E50"
-                                                   Margin="0,0,0,4"/>
+                                                                   FontWeight="Medium"
+                                                                   Foreground="#2C3E50"
+                                                                   Margin="0,0,0,4"/>
 
                                                         <Grid>
                                                             <Grid.ColumnDefinitions>
@@ -2106,8 +2079,8 @@
                                                         </Grid>
 
                                                         <ListBox ItemsSource="{Binding StructConfigViewModel.SelectedLinkConfig.EnabledTransports}"
-                                                 Height="120"
-                                                 Margin="0,5,0,0">
+                                                                 Height="120"
+                                                                 Margin="0,5,0,0">
                                                             <ListBox.ItemTemplate>
                                                                 <DataTemplate>
                                                                     <Grid>
@@ -2116,20 +2089,20 @@
                                                                             <ColumnDefinition Width="Auto"/>
                                                                         </Grid.ColumnDefinitions>
                                                                         <TextBlock Grid.Column="0" 
-                                                                   Text="{Binding }"
-                                                                   VerticalAlignment="Center"
-                                                                   Margin="5,0"/>
+                                                                                   Text="{Binding }"
+                                                                                   VerticalAlignment="Center"
+                                                                                   Margin="5,0"/>
                                                                         <Button Grid.Column="1"
-                                                                Command="{Binding DataContext.StructConfigViewModel.SelectedLinkConfig.RemoveTransportCommand, 
-                                                                        RelativeSource={RelativeSource AncestorType=ListBox}}"
-                                                                CommandParameter="{Binding}"
-                                                                Content="✕"
-                                                                Width="24"
-                                                                Height="24"
-                                                                Style="{StaticResource ModernIconButtonStyle}"
-                                                                Padding="2"
-                                                                Background="Transparent"
-                                                                BorderThickness="0"/>
+                                                                                Command="{Binding DataContext.StructConfigViewModel.SelectedLinkConfig.RemoveTransportCommand, 
+                                                                                        RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                                                                CommandParameter="{Binding}"
+                                                                                Content="✕"
+                                                                                Width="24"
+                                                                                Height="24"
+                                                                                Style="{StaticResource ModernIconButtonStyle}"
+                                                                                Padding="2"
+                                                                                Background="Transparent"
+                                                                                BorderThickness="0"/>
                                                                     </Grid>
                                                                 </DataTemplate>
                                                             </ListBox.ItemTemplate>
@@ -2139,26 +2112,6 @@
                                             </ScrollViewer>
                                         </Grid>
                                     </Border>
-
-                                    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,10,0,0">
-                                        <Button Command="{Binding StructConfigViewModel.AddLinkConfigCommand}"
-                                Height="30"
-                                Content="Добавить соединение"
-                                Padding="12,8"
-                                HorizontalAlignment="Left"
-                                Margin="0,0,8,0"
-                                Style="{StaticResource ModernIconButtonStyle}"/>
-
-                                        <Button Command="{Binding StructConfigViewModel.RemoveLinkConfigCommand}"
-                                Height="30"
-                                Content="Удалить соединение"
-                                Padding="12,8"
-                                HorizontalAlignment="Left"
-                                Style="{StaticResource ModernIconButtonStyle}"
-                                Background="#E74C3C"
-                                Foreground="White"
-                                BorderBrush="#C0392B"/>
-                                    </StackPanel>
                                 </Grid>
                             </Border>
                         </StackPanel>
