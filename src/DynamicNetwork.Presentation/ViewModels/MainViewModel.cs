@@ -1,24 +1,20 @@
 ﻿using DynamicNetwork.Application.Dtos;
-using DynamicNetwork.Application.Interfaces.Ports;
 using DynamicNetwork.Application.Interfaces.Providers;
 using DynamicNetwork.Application.Interfaces.Repositories;
 using DynamicNetwork.Application.Interfaces.Session;
-using DynamicNetwork.Application.Interfaces.UseCases;
 using DynamicNetwork.Application.Interfaces.UseCases.Analysis;
 using DynamicNetwork.Application.Interfaces.UseCases.Configuration;
 using DynamicNetwork.Application.Interfaces.UseCases.Graphs;
 using DynamicNetwork.Application.Interfaces.UseCases.Library;
 using DynamicNetwork.Application.Interfaces.UseCases.Reachability;
-using DynamicNetwork.Application.UseCases.Configuration;
 using DynamicNetwork.Domain.Configuration;
 using DynamicNetwork.Domain.Enums;
 using DynamicNetwork.Domain.Graph;
 using DynamicNetwork.Infrastructure.Adapters.VisualGraph;
 using DynamicNetwork.Presentation.Commands;
 using DynamicNetwork.Presentation.Services;
-using System;
+using DynamicNetwork.Presentation.ViewModels.Configuration;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows.Input;
 
 namespace DynamicNetwork.Presentation.ViewModels;
@@ -133,6 +129,7 @@ public class MainViewModel : ViewModelBase
                 _structConfigViewModel = new StructConfigurationViewModel(
                     this,
                     _configRepository,
+                    _flowRepository,
                     _editStructUseCase,
                     _libraryProvider
                 );
@@ -307,6 +304,7 @@ public class MainViewModel : ViewModelBase
         if (index >= 0)
         {
             TemporalGraphs[index] = updatedGraph;
+            CurrentGraph = null;
             CurrentGraph = updatedGraph;
         }
     }
@@ -349,7 +347,7 @@ public class MainViewModel : ViewModelBase
             {
                 foreach (var node in config.Nodes)
                 {
-                    if (node.Inputs.Any(input => !string.IsNullOrWhiteSpace(input)))
+                    if (node.InputsVolumes.Any(input => !string.IsNullOrWhiteSpace(input.Key)))
                     {
                         nodeInputs[node] = config.Interval;
                         inputIntervals.Add(config.Interval);

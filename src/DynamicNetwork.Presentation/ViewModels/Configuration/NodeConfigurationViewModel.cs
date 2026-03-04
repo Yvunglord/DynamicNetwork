@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 
-namespace DynamicNetwork.Presentation.ViewModels;
+namespace DynamicNetwork.Presentation.ViewModels.Configuration;
 
 public class NodeConfigurationViewModel : ViewModelBase
 {
@@ -25,8 +25,8 @@ public class NodeConfigurationViewModel : ViewModelBase
     public ObservableCollection<string> EnabledProcesses { get; }
         = new ObservableCollection<string>();
 
-    public ObservableCollection<string> Inputs { get; }
-        = new ObservableCollection<string>();
+    public ObservableCollection<InputVolumesViewModel> InputVolumes { get; }
+        = new ObservableCollection<InputVolumesViewModel>();
 
     public ObservableCollection<string> Outputs { get; }
         = new ObservableCollection<string>();
@@ -35,8 +35,8 @@ public class NodeConfigurationViewModel : ViewModelBase
         = new ObservableCollection<StorageCapacityViewModel>();
 
     private string? _selectedProcessToAdd;
-    private string? _newInputText;
-    private string? _newOutputText;
+    private string? _selectedInputToAdd;
+    private string? _selectedOutputToAdd;
     private string? _selectedStorageToAdd;
 
     public string? SelectedProcessToAdd
@@ -45,16 +45,16 @@ public class NodeConfigurationViewModel : ViewModelBase
         set => SetField(ref _selectedProcessToAdd, value);
     }
 
-    public string? NewInputText
+    public string? SelectedInputToAdd
     {
-        get => _newInputText;
-        set => SetField(ref _newInputText, value);
+        get => _selectedInputToAdd;
+        set => SetField(ref _selectedInputToAdd, value);
     }
 
-    public string? NewOutputText
+    public string? SelectedOutputToAdd
     {
-        get => _newOutputText;
-        set => SetField(ref _newOutputText, value);
+        get => _selectedOutputToAdd;
+        set => SetField(ref _selectedOutputToAdd, value);
     }
 
     public string? SelectedStorageToAdd
@@ -73,8 +73,8 @@ public class NodeConfigurationViewModel : ViewModelBase
 
         _originalActiveProcesses.AddRange(nodeConfig.ActiveProcesses);
 
-        foreach (var input in nodeConfig.Inputs)
-            Inputs.Add(input);
+        foreach (var input in nodeConfig.InputsVolumes)
+            InputVolumes.Add(new InputVolumesViewModel(input.Key, input.Value, onChanged));
 
         foreach (var output in nodeConfig.Outputs)
             Outputs.Add(output);
@@ -83,7 +83,7 @@ public class NodeConfigurationViewModel : ViewModelBase
             StorageCapacities.Add(new StorageCapacityViewModel(storage.Key, storage.Value, onChanged));
 
         EnabledProcesses.CollectionChanged += (s, e) => _onChanged?.Invoke();
-        Inputs.CollectionChanged += (s, e) => _onChanged?.Invoke();
+        InputVolumes.CollectionChanged += (s, e) => _onChanged?.Invoke();
         Outputs.CollectionChanged += (s, e) => _onChanged?.Invoke();
         StorageCapacities.CollectionChanged += (s, e) => _onChanged?.Invoke();
     }
@@ -91,7 +91,8 @@ public class NodeConfigurationViewModel : ViewModelBase
     public NodeConfiguration ToDomainModel()
     {
         var processes = EnabledProcesses.ToList();
-        var inputs = Inputs.ToList();
+        var inputs = InputVolumes
+            .ToDictionary(i => i.FlowId, i => i.Volume);
         var outputs = Outputs.ToList();
         var storageDict = StorageCapacities
             .ToDictionary(s => s.StorageType, s => s.Capacity);
@@ -121,7 +122,7 @@ public class NodeConfigurationViewModel : ViewModelBase
     public ICommand RemoveProcessCommand => new RelayCommand<string>(RemoveProcess);
 
     public ICommand AddInputCommand => new RelayCommand(AddInput, CanAddInput);
-    public ICommand RemoveInputCommand => new RelayCommand<string>(RemoveInput);
+    public ICommand RemoveInputCommand => new RelayCommand<InputVolumesViewModel>(RemoveInput);
 
     public ICommand AddOutputCommand => new RelayCommand(AddOutput, CanAddOutput);
     public ICommand RemoveOutputCommand => new RelayCommand<string>(RemoveOutput);
@@ -153,36 +154,36 @@ public class NodeConfigurationViewModel : ViewModelBase
 
     private void AddInput()
     {
-        if (!string.IsNullOrWhiteSpace(NewInputText) && !Inputs.Contains(NewInputText))
+        if (!string.IsNullOrWhiteSpace(SelectedInputToAdd) &&
+            !InputVolumes.Any(i => i.FlowId == SelectedInputToAdd))
         {
-            Inputs.Add(NewInputText);
-            NewInputText = null;
+            InputVolumes.Add(new InputVolumesViewModel(SelectedInputToAdd, 0, _onChanged));
             _onChanged?.Invoke();
         }
     }
 
-    private bool CanAddInput() => !string.IsNullOrWhiteSpace(NewInputText);
+    private bool CanAddInput() => !string.IsNullOrWhiteSpace(SelectedInputToAdd);
 
-    private void RemoveInput(string? input)
+    private void RemoveInput(InputVolumesViewModel? input)
     {
-        if (!string.IsNullOrWhiteSpace(input) && Inputs.Contains(input))
+        if (input != null && InputVolumes.Contains(input))
         {
-            Inputs.Remove(input);
+            InputVolumes.Remove(input);
             _onChanged?.Invoke();
         }
     }
 
     private void AddOutput()
     {
-        if (!string.IsNullOrWhiteSpace(NewOutputText) && !Outputs.Contains(NewOutputText))
+        if (!string.IsNullOrWhiteSpace(SelectedOutputToAdd) && !Outputs.Contains(SelectedOutputToAdd))
         {
-            Outputs.Add(NewOutputText);
-            NewOutputText = null;
+            Outputs.Add(SelectedOutputToAdd);
+            SelectedOutputToAdd = null;
             _onChanged?.Invoke();
         }
     }
 
-    private bool CanAddOutput() => !string.IsNullOrWhiteSpace(NewOutputText);
+    private bool CanAddOutput() => !string.IsNullOrWhiteSpace(SelectedOutputToAdd);
 
     private void RemoveOutput(string? output)
     {

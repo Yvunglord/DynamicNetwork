@@ -121,8 +121,8 @@ public class XmlConfigurationExportAdapter : IConfigurationExportService
             var elem = new XElement("elem",
                 new XAttribute("id", n.NodeId));
 
-            foreach (var input in n.Inputs)
-                elem.Add(new XAttribute($"input_{input}", string.Empty));
+            foreach (var input in n.InputsVolumes)
+                elem.Add(new XAttribute($"input_{input.Key}", input.Value));
 
             foreach (var output in n.Outputs)
                 elem.Add(new XAttribute($"output_{output}", string.Empty));

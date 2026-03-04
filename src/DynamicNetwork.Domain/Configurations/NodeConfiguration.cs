@@ -32,10 +32,10 @@ public sealed class NodeConfiguration
     public IReadOnlyCollection<string> EnabledProcesses { get; }
 
     /// <summary>
-    /// Типы данных, которые поступают на узел из внешнего мира.
+    /// Типы данных, которые поступают на узел из внешнего мира и их объем.
     /// Неактуально для промежуточных узлов.
     /// </summary>
-    public IReadOnlyCollection<string> Inputs { get; }
+    public IReadOnlyDictionary<string, double> InputsVolumes { get; }
 
     /// <summary>
     /// Типы данных, которые должны появиться на узле в результате подбора конфигурации.
@@ -70,7 +70,7 @@ public sealed class NodeConfiguration
     public NodeConfiguration(
         string nodeId,
         IEnumerable<string> enabledProcesses,
-        IEnumerable<string> inputs,
+        IDictionary<string, double> inputs,
         IEnumerable<string> outputs,
         IDictionary<string, double> storageCapacities,
         IEnumerable<string> activeProcesses
@@ -78,7 +78,7 @@ public sealed class NodeConfiguration
     {
         NodeId = nodeId;
         EnabledProcesses = enabledProcesses.ToList().AsReadOnly();
-        Inputs = inputs.ToList().AsReadOnly();
+        InputsVolumes = new Dictionary<string, double>(inputs);
         Outputs = outputs.ToList().AsReadOnly();
         StorageCapacities = new Dictionary<string, double>(storageCapacities);
         ActiveProcesses = activeProcesses.ToList().AsReadOnly();
@@ -93,6 +93,6 @@ public sealed class NodeConfiguration
     {
         var validated = processes.Where(p => EnabledProcesses.Contains(p)).ToList();
         return new NodeConfiguration(
-            NodeId, EnabledProcesses, Inputs, Outputs, StorageCapacities.ToDictionary(), validated);
+            NodeId, EnabledProcesses, InputsVolumes.ToDictionary(), Outputs, StorageCapacities.ToDictionary(), validated);
     }
 }

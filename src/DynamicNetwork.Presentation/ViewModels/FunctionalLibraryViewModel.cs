@@ -230,7 +230,6 @@ public class FunctionalLibraryViewModel : ViewModelBase
 
             LoadLibraryFromProvider();
             ClearProcessForm();
-            _parent.DialogService.ShowInfo($"Процесс '{process.Id}' добавлен");
         }
         catch (Exception ex)
         {
@@ -249,7 +248,6 @@ public class FunctionalLibraryViewModel : ViewModelBase
             LoadLibraryFromProvider();
             SelectedProcess = null;
             ClearProcessForm();
-            _parent.DialogService.ShowInfo($"Процесс '{_selectedProcess.Id}' удалён");
         }
         catch (Exception ex)
         {
@@ -278,7 +276,7 @@ public class FunctionalLibraryViewModel : ViewModelBase
             if (updated != null)
                 SelectedProcess = updated;
 
-            _parent.DialogService.ShowInfo($"Процесс '{updatedProcess.Id}' обновлён");
+            ClearProcessForm();
         }
         catch (Exception ex)
         {
@@ -328,7 +326,6 @@ public class FunctionalLibraryViewModel : ViewModelBase
             _manageLibraryUseCase.AddTransports(new[] { transport });
             LoadLibraryFromProvider();
             ClearTransportForm();
-            _parent.DialogService.ShowInfo($"Транспорт '{transport.Id}' добавлен");
         }
         catch (Exception ex)
         {
@@ -347,7 +344,6 @@ public class FunctionalLibraryViewModel : ViewModelBase
             LoadLibraryFromProvider();
             SelectedTransport = null;
             ClearTransportForm();
-            _parent.DialogService.ShowInfo($"Транспорт '{_selectedTransport.Id}' удалён");
         }
         catch (Exception ex)
         {
@@ -375,7 +371,7 @@ public class FunctionalLibraryViewModel : ViewModelBase
             if (updated != null)
                 SelectedTransport = updated;
 
-            _parent.DialogService.ShowInfo($"Транспорт '{updatedTransport.Id}' обновлён");
+            ClearTransportForm();
         }
         catch (Exception ex)
         {
@@ -419,7 +415,6 @@ public class FunctionalLibraryViewModel : ViewModelBase
             _manageLibraryUseCase.AddStorages(new[] { storage });
             LoadLibraryFromProvider();
             ClearStorageForm();
-            _parent.DialogService.ShowInfo($"Хранилище '{storage.Id}' добавлено");
         }
         catch (Exception ex)
         {
@@ -438,7 +433,6 @@ public class FunctionalLibraryViewModel : ViewModelBase
             LoadLibraryFromProvider();
             SelectedStorage = null;
             ClearStorageForm();
-            _parent.DialogService.ShowInfo($"Хранилище '{_selectedStorage.Id}' удалено");
         }
         catch (Exception ex)
         {
@@ -462,7 +456,7 @@ public class FunctionalLibraryViewModel : ViewModelBase
             if (updated != null)
                 SelectedStorage = updated;
 
-            _parent.DialogService.ShowInfo($"Хранилище '{updatedStorage.Id}' обновлено");
+            ClearStorageForm();
         }
         catch (Exception ex)
         {

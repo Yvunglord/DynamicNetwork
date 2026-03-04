@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 
-namespace DynamicNetwork.Presentation.ViewModels;
+namespace DynamicNetwork.Presentation.ViewModels.Configuration;
 
 public class LinkConfigurationViewModel : ViewModelBase
 {

@@ -184,7 +184,7 @@
                                               Width="25"
                                               Height="25"
                                               Margin="0,0,8,0"/>
-                                        <TextBlock Text="Интервалы стабильности"
+                                        <TextBlock Text="Интервалы постоянства структуры"
                                                    FontWeight="SemiBold"
                                                    FontSize="14"
                                                    Foreground="#2C3E50"/>
@@ -1669,21 +1669,21 @@
                     </TabControl>
                 </TabItem>
                 <TabItem Header="Конфигурации" 
-         Style="{StaticResource ModernTabItemStyle}">
+                         Style="{StaticResource ModernTabItemStyle}">
                     <ScrollViewer Style="{StaticResource CustomScrollViewerStyle}">
                         <StackPanel Margin="20">
                             <Border Style="{StaticResource InnerCardStyle}" Margin="0,0,0,15">
                                 <StackPanel>
                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                                         <Path Data="M12,2 L2,12 L12,22 L22,12 Z M4,12 L12,4 L20,12 L12,20 Z M7,7 L17,17 M17,7 L7,17"
-                              Fill="#3498DB"
-                              Width="25"
-                              Height="25"
-                              Margin="0,0,8,0"/>
+                                              Fill="#3498DB"
+                                              Width="25"
+                                              Height="25"
+                                              Margin="0,0,8,0"/>
                                         <TextBlock Text="Выбор интервала"
-                                   FontWeight="SemiBold"
-                                   FontSize="14"
-                                   Foreground="#2C3E50"/>
+                                                   FontWeight="SemiBold"
+                                                   FontSize="14"
+                                                   Foreground="#2C3E50"/>
                                     </StackPanel>
 
                                     <Grid>
@@ -1693,25 +1693,23 @@
                                         </Grid.ColumnDefinitions>
 
                                         <ComboBox Grid.Column="0"
-                                  ItemsSource="{Binding StructConfigViewModel.AvailableIntervals}"
-                                  SelectedItem="{Binding StructConfigViewModel.SelectedInterval}"
-                                  Style="{StaticResource ModernComboBoxStyle}"
-                                  Margin="0,0,10,0">
-       
-                                        </ComboBox>
+                                                  ItemsSource="{Binding StructConfigViewModel.AvailableIntervals}"
+                                                  SelectedItem="{Binding StructConfigViewModel.SelectedInterval}"
+                                                  Style="{StaticResource ModernComboBoxStyle}"
+                                                  Margin="0,0,10,0"/>
 
                                         <Button Grid.Column="1"
-                                Command="{Binding StructConfigViewModel.LoadFromLibraryCommand}"
-                                Height="30"
-                                Content="Обновить библиотеку"
-                                Padding="12,8"
-                                Style="{StaticResource ModernIconButtonStyle}"/>
+                                                Command="{Binding StructConfigViewModel.LoadFromLibraryCommand}"
+                                                Height="30"
+                                                Content="Обновить библиотеку"
+                                                Padding="12,8"
+                                                Style="{StaticResource ModernIconButtonStyle}"/>
                                     </Grid>
 
                                     <TextBlock Text="Выберите временной интервал для редактирования конфигураций"
-                               FontStyle="Italic"
-                               Foreground="#95A5A6"
-                               Margin="0,10,0,0"/>
+                                               FontStyle="Italic"
+                                               Foreground="#95A5A6"
+                                               Margin="0,10,0,0"/>
                                 </StackPanel>
                             </Border>
 
@@ -1725,22 +1723,22 @@
 
                                     <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
                                         <Path Data="M12,2 L2,12 L12,22 L22,12 Z M6,8 L18,8 L18,16 L6,16 Z M8,10 L16,10 L16,14 L8,14 Z"
-                              Fill="#27AE60"
-                              Width="25"
-                              Height="25"
-                              Margin="0,0,8,0"/>
+                                              Fill="#27AE60"
+                                              Width="25"
+                                              Height="25"
+                                              Margin="0,0,8,0"/>
                                         <TextBlock Text="Конфигурации узлов"
-                                   FontWeight="SemiBold"
-                                   FontSize="14"
-                                   Foreground="#2C3E50"/>
+                                                   FontWeight="SemiBold"
+                                                   FontSize="14"
+                                                   Foreground="#2C3E50"/>
                                     </StackPanel>
 
                                     <Border Grid.Row="1" 
-                            Background="#F8F9FA"
-                            CornerRadius="4"
-                            BorderBrush="#E1E8ED"
-                            BorderThickness="1"
-                            Height="400">
+                                            Background="#F8F9FA"
+                                            CornerRadius="4"
+                                            BorderBrush="#E1E8ED"
+                                            BorderThickness="1"
+                                            Height="400">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
@@ -1844,47 +1842,60 @@
                                                     <!-- Входы -->
                                                     <StackPanel Margin="0,0,0,12">
                                                         <TextBlock Text="Входы:"
-                                                                   FontWeight="Medium"
-                                                                   Foreground="#2C3E50"
-                                                                   Margin="0,0,0,4"/>
+                                                                  FontWeight="Medium"
+                                                                  Foreground="#2C3E50"
+                                                                  Margin="0,0,0,4"/>
 
-                                                        <StackPanel Orientation="Horizontal">
-                                                            <TextBox Text="{Binding StructConfigViewModel.SelectedNodeConfig.NewInputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                                     Width="150"
-                                                                     Style="{StaticResource ModernTextBoxStyle}"
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
+
+                                                            <ComboBox Grid.Column="0"
+                                                                     ItemsSource="{Binding StructConfigViewModel.AvailableFlows}"
+                                                                     SelectedItem="{Binding StructConfigViewModel.SelectedNodeConfig.SelectedInputToAdd, Mode=TwoWay}"
+                                                                     Style="{StaticResource ModernComboBoxStyle}"
                                                                      Margin="0,0,5,0"/>
-                                                            <Button Command="{Binding StructConfigViewModel.SelectedNodeConfig.AddInputCommand}"
-                                                                    Content="+"
-                                                                    Width="30"
-                                                                    Height="30"
-                                                                    Style="{StaticResource ModernIconButtonStyle}"/>
-                                                        </StackPanel>
 
-                                                        <ListBox ItemsSource="{Binding StructConfigViewModel.SelectedNodeConfig.Inputs}"
-                                                                 Height="80"
-                                                                 Margin="0,5,0,0">
+                                                            <Button Grid.Column="1"
+                                                                   Command="{Binding StructConfigViewModel.SelectedNodeConfig.AddInputCommand}"
+                                                                   Content="+"
+                                                                   Width="30"
+                                                                   Height="30"
+                                                                   Style="{StaticResource ModernIconButtonStyle}"/>
+                                                        </Grid>
+
+                                                        <ListBox ItemsSource="{Binding StructConfigViewModel.SelectedNodeConfig.InputVolumes}"
+                                                                Height="120"
+                                                                Margin="0,5,0,0">
                                                             <ListBox.ItemTemplate>
                                                                 <DataTemplate>
-                                                                    <Grid>
+                                                                    <Grid Margin="0,2,0,2">
                                                                         <Grid.ColumnDefinitions>
                                                                             <ColumnDefinition Width="*"/>
+                                                                            <ColumnDefinition Width="100"/>
                                                                             <ColumnDefinition Width="Auto"/>
                                                                         </Grid.ColumnDefinitions>
                                                                         <TextBlock Grid.Column="0" 
-                                                                                   Text="{Binding }"
-                                                                                   VerticalAlignment="Center"
-                                                                                   Margin="5,0"/>
-                                                                        <Button Grid.Column="1"
-                                                                                Command="{Binding DataContext.StructConfigViewModel.SelectedNodeConfig.RemoveInputCommand, 
-                                                                                        RelativeSource={RelativeSource AncestorType=ListBox}}"
-                                                                                CommandParameter="{Binding}"
-                                                                                Content="✕"
-                                                                                Width="24"
-                                                                                Height="24"
-                                                                                Style="{StaticResource ModernIconButtonStyle}"
-                                                                                Padding="2"
-                                                                                Background="Transparent"
-                                                                                BorderThickness="0"/>
+                                                                                  Text="{Binding FlowId}"
+                                                                                  VerticalAlignment="Center"
+                                                                                  Margin="5,0"/>
+                                                                        <TextBox Grid.Column="1"
+                                                                                Text="{Binding Volume, UpdateSourceTrigger=PropertyChanged}"
+                                                                                Style="{StaticResource ModernTextBoxStyle}"
+                                                                                Margin="5,0"/>
+                                                                        <Button Grid.Column="2"
+                                                                               Command="{Binding DataContext.StructConfigViewModel.SelectedNodeConfig.RemoveInputCommand, 
+                                                                                       RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                                                               CommandParameter="{Binding}"
+                                                                               Content="✕"
+                                                                               Width="24"
+                                                                               Height="24"
+                                                                               Style="{StaticResource ModernIconButtonStyle}"
+                                                                               Padding="2"
+                                                                               Background="Transparent"
+                                                                               BorderThickness="0"/>
                                                                     </Grid>
                                                                 </DataTemplate>
                                                             </ListBox.ItemTemplate>
