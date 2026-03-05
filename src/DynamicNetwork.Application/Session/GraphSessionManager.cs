@@ -106,6 +106,58 @@ public class GraphSessionManager : IGraphSessionManager
         _sessions.Remove(sessionId);
     }
 
+    public List<TemporalGraph> UpdateSameLinkDirection(
+        string sessionId,
+        int callerGraphIndex,
+        string nodeA,
+        string nodeB,
+        LinkDirection newDirection)
+    {
+        var graphs = _sessions[sessionId].Graphs.ToList();
+
+        if (callerGraphIndex < 0 || callerGraphIndex >= graphs.Count)
+            throw new ArgumentOutOfRangeException(nameof(callerGraphIndex));
+
+        var callerGraph = graphs[callerGraphIndex];
+        bool linkExistsInCaller = callerGraph.Links.Any(l =>
+            (l.NodeA == nodeA && l.NodeB == nodeB) ||
+            (l.NodeA == nodeB && l.NodeB == nodeA));
+
+        if (!linkExistsInCaller)
+            throw new InvalidOperationException($"Link between {nodeA} and {nodeB} not found in caller graph");
+
+        var updatedGraphs = new List<TemporalGraph>(graphs.Count);
+
+        foreach (var g in graphs)
+        {
+            var linkToUpdate = g.Links.FirstOrDefault(l =>
+                (l.NodeA == nodeA && l.NodeB == nodeB) ||
+                (l.NodeA == nodeB && l.NodeB == nodeA));
+
+            if (linkToUpdate != null)
+            {
+                var updatedLinks = g.Links
+                    .Select(l => l == linkToUpdate ? l.WithDirection(newDirection) : l)
+                    .ToList();
+
+                var updatedGraph = new TemporalGraph(
+                    g.Index,
+                    g.Interval,
+                    updatedLinks,
+                    g.AllNetworkNodes);
+
+                updatedGraphs.Add(updatedGraph);
+            }
+            else
+            {
+                updatedGraphs.Add(g);
+            }
+        }
+
+        _sessions[sessionId] = new GraphSession(updatedGraphs);
+        return updatedGraphs;
+    }
+
     private class GraphSession
     {
         public IReadOnlyList<TemporalGraph> Graphs { get; }

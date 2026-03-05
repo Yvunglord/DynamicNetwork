@@ -16,6 +16,7 @@ public class LinkDirectionToArrowConverter : IValueConverter
                 LinkDirection.Undirected => "↔",
                 LinkDirection.Right => "→",
                 LinkDirection.Left => "←",
+                LinkDirection.None => " ",
                 _ => "—"
             };
         }

@@ -42,6 +42,7 @@ public class MainViewModel : ViewModelBase
     private FunctionalLibraryViewModel? _libraryViewModel;
     private StructConfigurationViewModel? _structConfigViewModel;
     private string? _currentSessionId;
+    private bool _applyToAllGraphs = false;
 
     public IDialogService DialogService => _dialogService;
 
@@ -74,6 +75,12 @@ public class MainViewModel : ViewModelBase
     {
         get => _selectedLink;
         set => SetField(ref _selectedLink, value);
+    }
+
+    public bool ApplyToAllGraphs
+    {
+        get => _applyToAllGraphs;
+        set => SetField(ref _applyToAllGraphs, value);
     }
 
     public TopologyReachabilityViewModel ReachabilityViewModel
@@ -122,10 +129,8 @@ public class MainViewModel : ViewModelBase
 
     public ICommand LoadTemporalGraphCommand => new RelayCommand(LoadTemporalGraph);
     public ICommand LoadFunctionLibraryCommand => new RelayCommand(LoadFunctionLibrary);
-    public ICommand MakeRightDirectionCommand => new RelayCommand(MakeRightDirection);
-    public ICommand MakeLeftCommand => new RelayCommand(MakeLeftDirection);
-    public ICommand MakeUndirectedCommand => new RelayCommand(MakeUndirected);
     public ICommand CycleDirectionCommand => new RelayCommand<Link>(CycleDirection);
+    public ICommand SetDirectionCommand => new RelayCommand<LinkDirection>(SetDirection);
     public ICommand ExportXmlCommand => new RelayCommand(ExportXml);
 
     public MainViewModel(
@@ -213,61 +218,11 @@ public class MainViewModel : ViewModelBase
         }
     }
 
-    #region Link direction editing (ИСПРАВЛЕНО: иммутабельность)
-
-    private void MakeRightDirection()
-    {
-        if (SelectedLink == null || _currentSessionId == null || CurrentGraph == null) return;
-
-        var updatedGraph = _graphSessionManager.UpdateLinkDirection(
-            _currentSessionId,
-            CurrentGraph.Index,
-            SelectedLink.NodeA,
-            SelectedLink.NodeB,
-            LinkDirection.Right);
-
-        UpdateGraphInCollection(updatedGraph);
-    }
-
-    private void MakeUndirected()
-    {
-        if (SelectedLink == null || _currentSessionId == null || CurrentGraph == null) return;
-
-        var updatedGraph = _graphSessionManager.UpdateLinkDirection(
-            _currentSessionId,
-            CurrentGraph.Index,
-            SelectedLink.NodeA,
-            SelectedLink.NodeB,
-            LinkDirection.Undirected);
-
-        UpdateGraphInCollection(updatedGraph);
-    }
-
-    private void MakeLeftDirection()
-    {
-        if (SelectedLink == null || _currentSessionId == null || CurrentGraph == null) return;
-
-        var updatedGraph = _graphSessionManager.UpdateLinkDirection(
-            _currentSessionId,
-            CurrentGraph.Index,
-            SelectedLink.NodeA,
-            SelectedLink.NodeB,
-            LinkDirection.Left);
-
-        UpdateGraphInCollection(updatedGraph);
-    }
+    #region Link direction editing
 
     private void CycleDirection(Link? link)
     {
         if (link == null || _currentSessionId == null || CurrentGraph == null) return;
-
-        var nextDirection = link.Direction switch
-        {
-            LinkDirection.Undirected => LinkDirection.Right,
-            LinkDirection.Right => LinkDirection.Left,
-            LinkDirection.Left => LinkDirection.Undirected,
-            _ => LinkDirection.Undirected
-        };
 
         var updatedGraph = _graphSessionManager.UpdateLinkDirectionCycled(
             _currentSessionId,
@@ -278,16 +233,71 @@ public class MainViewModel : ViewModelBase
         UpdateGraphInCollection(updatedGraph);
     }
 
+    private void SetDirection(LinkDirection direction)
+    {
+        if (!ValidateEditContext()) return;
+
+        TemporalGraph? updatedGraph = null;
+        List<TemporalGraph>? updatedGraphs = null;
+
+        if (ApplyToAllGraphs)
+        {
+            updatedGraphs = _graphSessionManager.UpdateSameLinkDirection(
+                _currentSessionId!,
+                CurrentGraph!.Index,
+                SelectedLink!.NodeA,
+                SelectedLink!.NodeB,
+                direction);
+
+            UpdateAllGraphsInCollection(updatedGraphs);
+        }
+        else
+        {
+            updatedGraph = _graphSessionManager.UpdateLinkDirection(
+                _currentSessionId!,
+                CurrentGraph!.Index,
+                SelectedLink!.NodeA,
+                SelectedLink!.NodeB,
+                direction);
+
+            UpdateGraphInCollection(updatedGraph);
+        }
+    }
+
+    private bool ValidateEditContext()
+    {
+        return SelectedLink != null && _currentSessionId != null && CurrentGraph != null;
+    }
+
     private void UpdateGraphInCollection(TemporalGraph updatedGraph)
     {
         var index = TemporalGraphs.IndexOf(CurrentGraph!);
         if (index >= 0)
         {
             TemporalGraphs[index] = updatedGraph;
-            CurrentGraph = null;
-            CurrentGraph = updatedGraph;
+
+            _currentGraph = updatedGraph;
+        }
+
+        var temp = CurrentGraph;
+        CurrentGraph = null;
+        CurrentGraph = temp;
+    }
+
+    private void UpdateAllGraphsInCollection(List<TemporalGraph> updatedGraphs)
+    {
+        var currentInterval = CurrentGraph?.Interval;
+
+        TemporalGraphs.Clear();
+        foreach (var g in updatedGraphs)
+            TemporalGraphs.Add(g);
+
+        if (currentInterval != null)
+        {
+            CurrentGraph = updatedGraphs.FirstOrDefault(g => g.Interval.Equals(currentInterval));
         }
     }
+
 
     #endregion
 

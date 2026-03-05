@@ -4,11 +4,18 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DynamicNetwork.Presentation.Windows"
+        xmlns:enums="clr-namespace:DynamicNetwork.Domain.Enums;assembly=DynamicNetwork.Domain"
         mc:Ignorable="d"
         xmlns:views="clr-namespace:DynamicNetwork.Presentation.Views"
         xmlns:vm="clr-namespace:DynamicNetwork.Presentation.ViewModels"
         xmlns:converters="clr-namespace:DynamicNetwork.Presentation.Converters"
-        Title="Dynamic Network" Height="1000" Width="1200">
+        Title="Dynamic Network"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized"
+        WindowStyle="ThreeDBorderWindow"
+        ResizeMode="CanResize"
+        MinHeight="800"
+        MinWidth="600">
 
     <Window.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
@@ -48,7 +55,7 @@
                             <StackPanel Orientation="Horizontal">
                                 <Path Data="M19,9H15V3H9V9H5L12,16L19,9Z" 
                                           Fill="#2C3E50"
-                                          Width="16"
+                                          Width="20"
                                           Height="16"
                                           Margin="0,0,6,0"/>
                                 <TextBlock Text="Загрузить файл" 
@@ -402,40 +409,51 @@
                                                 </StackPanel>
                                             </StackPanel>
                                         </Border>
-                                        <StackPanel Orientation="Horizontal"
+                                        <StackPanel Orientation="Vertical"
                                                     HorizontalAlignment="Center"
                                                     Margin="0,10,0,0">
-                                            <Button Content="→ Направленное"
-                                                    Command="{Binding MakeRightDirectionCommand}"
-                                                    CommandParameter="{Binding ElementName=ConnectionsListBox, Path=SelectedItem}"
-                                                    Margin="0,0,8,0"
-                                                    Style="{StaticResource ModernIconButtonStyle}"
-                                                    Height="30"
-                                                    Width="125"
-                                                    Padding="12,6"
-                                                    Focusable="False">
-                                            </Button>
 
-                                            <Button Content="↔ Ненаправленное"
-                                                    Command="{Binding MakeUndirectedCommand}"
-                                                    CommandParameter="{Binding ElementName=ConnectionsListBox, Path=SelectedItem}"
-                                                    Margin="0,0,8,0"
-                                                    Style="{StaticResource ModernIconButtonStyle}"
-                                                    Width="125"
-                                                    Height="30"
-                                                    Padding="12,6"
-                                                    Focusable="False">
-                                            </Button>
+                                            <CheckBox Content="Применять ко всем"
+                                                      IsChecked="{Binding ApplyToAllGraphs}"
+                                                      Margin="0,0,0,10"
+                                                      HorizontalAlignment="Center"
+                                                      FontSize="12"/>
 
-                                            <Button Content="← Направленное"
-                                                    Command="{Binding MakeLeftCommand}"
-                                                    CommandParameter="{Binding ElementName=ConnectionsListBox, Path=SelectedItem}"
-                                                    Style="{StaticResource ModernIconButtonStyle}"
-                                                    Width="125"
-                                                    Height="30"
-                                                    Padding="12,6"
-                                                    Focusable="False">
-                                            </Button>
+                                            <StackPanel Orientation="Horizontal"
+                                                        HorizontalAlignment="Center">
+
+                                                <Button Content="→ Направленное"
+                                                        Command="{Binding SetDirectionCommand}"
+                                                        CommandParameter="{x:Static enums:LinkDirection.Right}"
+                                                        Margin="0,0,8,0"
+                                                        Style="{StaticResource ModernIconButtonStyle}"
+                                                        Height="30"
+                                                        Width="140"
+                                                        Padding="12,6"
+                                                        Focusable="False"
+                                                        ToolTip="Изменить направление связи"/>
+
+                                                <Button Content="↔ Ненаправленное"
+                                                        Command="{Binding SetDirectionCommand}"
+                                                        CommandParameter="{x:Static enums:LinkDirection.Undirected}"
+                                                        Margin="0,0,8,0"
+                                                        Style="{StaticResource ModernIconButtonStyle}"
+                                                        Width="140"
+                                                        Height="30"
+                                                        Padding="12,6"
+                                                        Focusable="False"
+                                                        ToolTip="Сделать связь ненаправленной"/>
+
+                                                <Button Content="← Направленное"
+                                                        Command="{Binding SetDirectionCommand}"
+                                                        CommandParameter="{x:Static enums:LinkDirection.Left}"
+                                                        Style="{StaticResource ModernIconButtonStyle}"
+                                                        Width="140"
+                                                        Height="30"
+                                                        Padding="12,6"
+                                                        Focusable="False"
+                                                        ToolTip="Изменить направление связи"/>
+                                            </StackPanel>
                                         </StackPanel>
 
                                         <TextBlock Text="Изменения сохраняются до конца сессии"

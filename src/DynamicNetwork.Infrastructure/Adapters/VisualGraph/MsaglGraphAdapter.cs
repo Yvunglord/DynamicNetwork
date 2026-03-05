@@ -39,6 +39,10 @@ public class MsaglGraphAdapter
                 edge.Attr.ArrowheadAtTarget = ArrowStyle.None;
                 edge.Attr.ArrowheadAtSource = ArrowStyle.None;
             }
+            else if (l.Direction == LinkDirection.Conditional)
+            {
+                edge.Attr.Color = Color.Red;
+            }
             else
             {
                 graph.RemoveEdge(edge);
