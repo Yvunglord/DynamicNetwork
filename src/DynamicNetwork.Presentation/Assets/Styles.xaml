@@ -309,15 +309,17 @@
         <Setter Property="Foreground" Value="#2C3E50"/>
         <Setter Property="Padding" Value="8"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <!-- Важно: растягиваем контент элементов, чтобы фон закрашивал всю ширину -->
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ComboBox">
                     <Grid>
                         <Border x:Name="border" 
-                            Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="4">
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="4">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
@@ -325,30 +327,28 @@
                                 </Grid.ColumnDefinitions>
 
                                 <ContentPresenter Grid.Column="0"
-                                              x:Name="ContentSite"
-                                              Content="{TemplateBinding SelectionBoxItem}"
-                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
-                                              ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
-                                              Margin="{TemplateBinding Padding}"
-                                              VerticalAlignment="Center"
-                                              HorizontalAlignment="Stretch"/>
+                                          x:Name="ContentSite"
+                                          Content="{TemplateBinding SelectionBoxItem}"
+                                          ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                          Margin="{TemplateBinding Padding}"
+                                          VerticalAlignment="Center"
+                                          HorizontalAlignment="Stretch"/>
 
                                 <ToggleButton Grid.Column="1"
-                                          x:Name="toggleButton"
-                                          Background="Transparent"
-                                          BorderBrush="Transparent"
-                                          BorderThickness="0"
-                                          Focusable="False"
-                                          IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                                      x:Name="toggleButton"
+                                      Background="Transparent"
+                                      BorderBrush="Transparent"
+                                      BorderThickness="0"
+                                      Focusable="False"
+                                      IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
                                     <ToggleButton.Template>
                                         <ControlTemplate TargetType="ToggleButton">
-                                            <Border Background="Transparent"
-                                                Padding="8,0">
+                                            <Border Background="Transparent" Padding="8,0">
                                                 <Path Data="M7,10 L12,15 L17,10 Z"
-                                                  Fill="#7F8C8D"
-                                                  Width="20"
-                                                  Height="20"
-                                                  VerticalAlignment="Center"/>
+                                              Fill="#7F8C8D"
+                                              Width="20"
+                                              Height="20"
+                                              VerticalAlignment="Center"/>
                                             </Border>
                                         </ControlTemplate>
                                     </ToggleButton.Template>
@@ -357,16 +357,20 @@
                         </Border>
 
                         <Popup x:Name="Popup"
-                           Placement="Bottom"
-                           IsOpen="{Binding IsChecked, ElementName=toggleButton}"
-                           AllowsTransparency="True"
-                           PopupAnimation="Fade"
-                           VerticalOffset="1">
+                       Placement="Bottom"
+                       IsOpen="{Binding IsChecked, ElementName=toggleButton}"
+                       AllowsTransparency="True"
+                       PopupAnimation="Fade"
+                       VerticalOffset="1">
                             <Border Background="White"
-                                BorderBrush="#E1E8ED"
-                                BorderThickness="1"
-                                CornerRadius="4"
-                                MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                            BorderBrush="#E1E8ED"
+                            BorderThickness="1"
+                            CornerRadius="4"
+                            MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                            Margin="0,2,0,0">
+                                <Border.Effect>
+                                    <DropShadowEffect ShadowDepth="0" Direction="270" Color="#000000" Opacity="0.15" BlurRadius="10"/>
+                                </Border.Effect>
                                 <ScrollViewer>
                                     <ItemsPresenter/>
                                 </ScrollViewer>
@@ -382,10 +386,6 @@
                             <Setter TargetName="border" Property="BorderBrush" Value="#2980B9"/>
                             <Setter TargetName="border" Property="BorderThickness" Value="2"/>
                         </Trigger>
-                        <Trigger Property="IsEditable" Value="True">
-                            <Setter Property="IsTabStop" Value="False"/>
-                            <Setter TargetName="ContentSite" Property="Visibility" Value="Hidden"/>
-                        </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -395,25 +395,38 @@
                 <Style TargetType="ComboBoxItem">
                     <Setter Property="Background" Value="Transparent"/>
                     <Setter Property="BorderThickness" Value="0"/>
-                    <Setter Property="Padding" Value="8"/>
+                    <Setter Property="Padding" Value="10,8"/>
                     <Setter Property="MinHeight" Value="32"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="ComboBoxItem">
                                 <Border x:Name="Bd"
-                                    Background="{TemplateBinding Background}"
-                                    BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="{TemplateBinding BorderThickness}"
-                                    Padding="{TemplateBinding Padding}">
-                                    <ContentPresenter VerticalAlignment="Center"/>
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}"
+                                CornerRadius="2">
+                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
                                         <Setter TargetName="Bd" Property="Background" Value="#F5F8FA"/>
                                     </Trigger>
                                     <Trigger Property="IsSelected" Value="True">
-                                        <Setter TargetName="Bd" Property="Background" Value="#E3F2FD"/>
+                                        <Setter TargetName="Bd" Property="Background" Value="#D6EAF8"/>
+                                        <Setter TargetName="Bd" Property="BorderThickness" Value="3,0,0,0"/>
+                                        <Setter TargetName="Bd" Property="BorderBrush" Value="#3498DB"/>
+                                        <Setter Property="Foreground" Value="#2980B9"/>
+                                        <Setter Property="FontWeight" Value="SemiBold"/>
                                     </Trigger>
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsSelected" Value="True"/>
+                                            <Condition Property="IsMouseOver" Value="True"/>
+                                        </MultiTrigger.Conditions>
+                                        <Setter TargetName="Bd" Property="Background" Value="#BBDEFB"/>
+                                    </MultiTrigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
                         </Setter.Value>

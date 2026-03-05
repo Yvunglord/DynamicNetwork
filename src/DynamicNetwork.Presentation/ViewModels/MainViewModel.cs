@@ -276,12 +276,13 @@ public class MainViewModel : ViewModelBase
         {
             TemporalGraphs[index] = updatedGraph;
 
-            _currentGraph = updatedGraph;
+            CurrentGraph = updatedGraph;
         }
 
-        var temp = CurrentGraph;
-        CurrentGraph = null;
-        CurrentGraph = temp;
+        if (IntervalsViewModel != null)
+        {
+            IntervalsViewModel.Selected = CurrentGraph;
+        }
     }
 
     private void UpdateAllGraphsInCollection(List<TemporalGraph> updatedGraphs)
@@ -295,6 +296,11 @@ public class MainViewModel : ViewModelBase
         if (currentInterval != null)
         {
             CurrentGraph = updatedGraphs.FirstOrDefault(g => g.Interval.Equals(currentInterval));
+        }
+
+        if (IntervalsViewModel != null)
+        {
+            IntervalsViewModel.Selected = CurrentGraph;
         }
     }
 
