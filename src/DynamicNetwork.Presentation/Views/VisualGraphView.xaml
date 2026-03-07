@@ -1,12 +1,8 @@
 ﻿<UserControl x:Class="DynamicNetwork.Presentation.Views.VisualGraphView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:DynamicNetwork.Presentation.Views"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf">
     <Grid>
-        <WindowsFormsHost x:Name="GraphViewerHost"/>
+        <wv2:WebView2 x:Name="WebViewControl"/>
     </Grid>
 </UserControl>

@@ -111,7 +111,8 @@
 
                 <Border Grid.Row="0" 
                         Style="{StaticResource CardBorderStyle}">
-                    <views:VisualGraphView DataContext="{Binding VisualGraphViewModel}"/>
+                    <views:VisualGraphView DataContext="{Binding VisualGraphViewModel}"
+                                           x:Name="GraphView"/>
                 </Border>
 
                 <GridSplitter Grid.Row="1" 
@@ -419,7 +420,7 @@
                                                     HorizontalAlignment="Center"
                                                     Margin="0,10,0,0">
 
-                                            <CheckBox Content="Применять ко всем"
+                                            <CheckBox Content="Ко всем"
                                                       IsChecked="{Binding ApplyToAllGraphs}"
                                                       Margin="0,0,0,10"
                                                       HorizontalAlignment="Center"
@@ -1156,7 +1157,8 @@
                                                         Margin="0,0,8,0"
                                                         Style="{StaticResource ModernIconButtonStyle}"/>
 
-                                                <Button Height="30"
+                                                <Button Command="{Binding ExportFunctionalLibraryCommand}"
+                                                        Height="30"
                                                         Content="Экспорт в XML"
                                                         Padding="12,8"
                                                         HorizontalAlignment="Left"
@@ -1879,7 +1881,7 @@
                                                                    Margin="0,0,0,4"/>
 
                                                         <StackPanel Orientation="Horizontal">
-                                                            <TextBox Text="{Binding StructConfigViewModel.SelectedNodeConfig.NewOutputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                            <TextBox Text="{Binding StructConfigViewModel.SelectedNodeConfig.SelectedOutputToAdd, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                                      Width="150"
                                                                      Style="{StaticResource ModernTextBoxStyle}"
                                                                      Margin="0,0,5,0"/>

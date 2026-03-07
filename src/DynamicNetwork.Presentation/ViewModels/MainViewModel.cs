@@ -7,6 +7,7 @@ using DynamicNetwork.Application.Interfaces.UseCases.Configuration;
 using DynamicNetwork.Application.Interfaces.UseCases.Graphs;
 using DynamicNetwork.Application.Interfaces.UseCases.Library;
 using DynamicNetwork.Application.Interfaces.UseCases.Reachability;
+using DynamicNetwork.Domain.Configuration;
 using DynamicNetwork.Domain.Enums;
 using DynamicNetwork.Domain.Graph;
 using DynamicNetwork.Infrastructure.Adapters.VisualGraph;
@@ -14,6 +15,7 @@ using DynamicNetwork.Presentation.Commands;
 using DynamicNetwork.Presentation.Services;
 using DynamicNetwork.Presentation.ViewModels.Configuration;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
 
 namespace DynamicNetwork.Presentation.ViewModels;
@@ -28,6 +30,7 @@ public class MainViewModel : ViewModelBase
     private readonly ICheckReachabilityUseCase _reachabilityUseCase;
     private readonly IAnalyzeGraphStructureUseCase _analyzerUseCase;
     private readonly IExportConfigurationUseCase _exportUseCase;
+    private readonly IExportFunctionLibraryUseCase _exportLibraryUseCase;
     private readonly IEditStructConfigurationUseCase _editStructUseCase;
     private readonly ISynthesizeConfigurationUseCase _synthesizeUseCase;
     private readonly IImportFunctionLibraryUseCase _importLibraryUseCase;
@@ -65,7 +68,8 @@ public class MainViewModel : ViewModelBase
             SetField(ref _currentGraph, value);
             if (value != null)
             {
-                VisualGraphViewModel.SetGraph(value);
+                var config = CurrentGraph != null ? _configRepository.GetByInterval(CurrentGraph.Interval) : null;
+                VisualGraphViewModel.SetGraph(value, config);
                 AnalysisResult = _analyzerUseCase.Execute(value);
             }
         }
@@ -129,6 +133,7 @@ public class MainViewModel : ViewModelBase
 
     public ICommand LoadTemporalGraphCommand => new RelayCommand(LoadTemporalGraph);
     public ICommand LoadFunctionLibraryCommand => new RelayCommand(LoadFunctionLibrary);
+    public ICommand ExportFunctionalLibraryCommand => new RelayCommand(ExportFunctionLibrary);
     public ICommand CycleDirectionCommand => new RelayCommand<Link>(CycleDirection);
     public ICommand SetDirectionCommand => new RelayCommand<LinkDirection>(SetDirection);
     public ICommand ExportXmlCommand => new RelayCommand(ExportXml);
@@ -145,10 +150,12 @@ public class MainViewModel : ViewModelBase
         IEditStructConfigurationUseCase editStructUseCase,
         ISynthesizeConfigurationUseCase synthesizeUseCase,
         IImportFunctionLibraryUseCase importLibraryUseCase,
-        IManageFunctionLibraryUseCase manageLibraryUseCase)
+        IExportFunctionLibraryUseCase exportLibraryUseCase,
+        IManageFunctionLibraryUseCase manageLibraryUseCase,
+        CytoscapeGraphAdapter cytoscapeAdapter,
+        IGraphVisualizationService visualizationService)
     {
-        MsaglGraphAdapter adapter = new MsaglGraphAdapter();
-        _visualGraphViewModel = new VisualGraphViewModel(adapter);
+        _visualGraphViewModel = new VisualGraphViewModel(cytoscapeAdapter, visualizationService);
 
         _dialogService = dialogService;
         _loadGraphsUseCase = loadGraphsUseCase;
@@ -161,6 +168,7 @@ public class MainViewModel : ViewModelBase
         _editStructUseCase = editStructUseCase;
         _synthesizeUseCase = synthesizeUseCase;
         _importLibraryUseCase = importLibraryUseCase;
+        _exportLibraryUseCase = exportLibraryUseCase;
         _manageLibraryUseCase = manageLibraryUseCase;
     }
 
@@ -215,6 +223,25 @@ public class MainViewModel : ViewModelBase
         catch (Exception ex)
         {
             _dialogService.ShowError($"Ошибка загрузки библиотеки: {ex.Message}");
+        }
+    }
+
+    private void ExportFunctionLibrary()
+    {
+        var path = _dialogService.ShowSaveFileDialog(
+            "lib",
+            "XML files (*.xml)|*.xml|All files (*.*)|*.*",
+            "C:\\");
+
+        if (path == null) return;
+
+        try
+        {
+            _exportLibraryUseCase.Execute(path);   
+        }
+        catch (Exception ex)
+        {
+            _dialogService.ShowError($"Ошибка выгрузки библиотеки: {ex.Message}");
         }
     }
 
@@ -324,6 +351,14 @@ public class MainViewModel : ViewModelBase
         catch (Exception ex)
         {
             _dialogService.ShowError($"Ошибка экспорта: {ex.Message}");
+        }
+    }
+
+    public void NotifyConfigChanged(StructConfiguration newConfig)
+    {
+        if (CurrentGraph != null && CurrentGraph.Interval.Equals(newConfig.Interval))
+        {
+            VisualGraphViewModel.UpdateConfiguration(newConfig);
         }
     }
 }

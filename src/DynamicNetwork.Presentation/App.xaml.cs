@@ -5,9 +5,11 @@ using DynamicNetwork.Infrastructure.Adapters.VisualGraph;
 using DynamicNetwork.Infrastructure.DependencyInjection;
 using DynamicNetwork.Presentation.Services;
 using DynamicNetwork.Presentation.ViewModels;
+using DynamicNetwork.Presentation.Views;
 using DynamicNetwork.Presentation.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Diagnostics;
 using System.Windows;
 
 namespace DynamicNetwork.Presentation
@@ -31,7 +33,9 @@ namespace DynamicNetwork.Presentation
             services.AddDynamicNetworkSynthesis();
 
             services.AddSingleton<IDialogService, DialogService>();
-            services.AddScoped<MsaglGraphAdapter>();
+            services.AddSingleton<CytoscapeGraphAdapter>();
+            services.AddSingleton<IGraphVisualizationService, WebViewGraphService>();
+            services.AddTransient<VisualGraphViewModel>();
 
             services.AddSingleton<MainViewModel>();
             services.AddSingleton<MainWindow>();
@@ -47,6 +51,8 @@ namespace DynamicNetwork.Presentation
             var mainViewModel = _host.Services.GetRequiredService<MainViewModel>();
             mainWindow.DataContext = mainViewModel;
             mainWindow.Show();
+
+            AttachVisualizationService(mainWindow);
 
             base.OnStartup(e);
         }
@@ -105,6 +111,20 @@ namespace DynamicNetwork.Presentation
                     new FlowType("2")
                 }
             );
+        }
+
+        private void AttachVisualizationService(MainWindow window)
+        {
+            if (window.GraphView is VisualGraphView graphView)
+            {
+                var visualizationService = _host.Services.GetRequiredService<IGraphVisualizationService>();
+
+                graphView.AttachVisualizationService(visualizationService);
+            }
+            else
+            {
+                Debug.WriteLine("GraphView не найден или неверный тип!");
+            }
         }
     }
 }

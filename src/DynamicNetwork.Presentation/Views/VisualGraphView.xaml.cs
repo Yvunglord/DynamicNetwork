@@ -1,8 +1,7 @@
-﻿using DynamicNetwork.Presentation.ViewModels;
-using Microsoft.Msagl.Drawing;
-using Microsoft.Msagl.GraphViewerGdi;
+﻿using DynamicNetwork.Presentation.Services;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,39 +22,37 @@ namespace DynamicNetwork.Presentation.Views
     /// </summary>
     public partial class VisualGraphView : UserControl
     {
-        private GViewer? _viewer;
-
         public VisualGraphView()
         {
             InitializeComponent();
-            _viewer = new GViewer();
-            GraphViewerHost.Child = _viewer;
-
-            this.Loaded += (s, e) =>
-            {
-                if (DataContext is VisualGraphViewModel vm)
-                {
-                    vm.PropertyChanged += (sender, args) =>
-                    {
-                        if (args.PropertyName == nameof(VisualGraphViewModel.VisualGraph))
-                        {
-                            UpdateGraph(vm.VisualGraph);
-                        }
-                    };
-
-                    if (vm.VisualGraph != null)
-                    {
-                        UpdateGraph(vm.VisualGraph);
-                    }
-                }
-            };
         }
 
-        private void UpdateGraph(Graph graph)
+        public void AttachVisualizationService(IGraphVisualizationService service)
         {
-            if (graph != null && _viewer != null)
+            if (service is WebViewGraphService webViewService)
             {
-                _viewer.Graph = graph;
+                webViewService.AttachView(WebViewControl);
+
+                if (this.IsLoaded)
+                {
+                    _ = InitializeWebViewAsync(webViewService);
+                }
+                else
+                {
+                    this.Loaded += async (s, e) => await InitializeWebViewAsync(webViewService);
+                }
+            }
+        }
+
+        private async Task InitializeWebViewAsync(WebViewGraphService service)
+        {
+            try
+            {
+                await service.InitializeAsync();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Ошибка инициализации: {ex.Message}");
             }
         }
     }

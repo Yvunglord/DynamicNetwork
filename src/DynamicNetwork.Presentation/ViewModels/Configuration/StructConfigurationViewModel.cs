@@ -222,10 +222,10 @@ public class StructConfigurationViewModel : ViewModelBase
         return new StructConfiguration(interval, nodeConfigs, linkConfigs);
     }
 
-    private void SaveConfigurationToRepository()
+    private StructConfiguration? SaveConfigurationToRepository()
     {
         if (_selectedInterval == TimeInterval.Empty || _currentConfiguration == null)
-            return;
+            return null;
 
         try
         {
@@ -239,15 +239,33 @@ public class StructConfigurationViewModel : ViewModelBase
             );
 
             _currentConfiguration = _editUseCase.Edit(updatedConfig.Interval, updatedConfig);
+
+            return _currentConfiguration;
         }
         catch (Exception ex)
         {
             _parent.DialogService.ShowError($"Ошибка сохранения конфигурации: {ex.Message}");
+            return null;
         }
     }
 
-    private void OnNodeConfigurationChanged() => SaveConfigurationToRepository();
-    private void OnLinkConfigurationChanged() => SaveConfigurationToRepository();
+    private void OnNodeConfigurationChanged()
+    {
+        var config = SaveConfigurationToRepository();
+        if (config != null)
+        {
+            _parent.NotifyConfigChanged(config);
+        }
+    }
+
+    private void OnLinkConfigurationChanged()
+    {
+        var config = SaveConfigurationToRepository();
+        if (config != null)
+        {
+            _parent.NotifyConfigChanged(config);
+        }
+    }
 
     private void LoadAvailableProcesses()
     {
