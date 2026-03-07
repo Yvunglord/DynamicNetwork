@@ -9,6 +9,5 @@ public interface ISynthesizeConfigurationUseCase
 {
     IReadOnlyList<StructConfiguration> Execute(
         StructConfigurationRequestDto request,
-        IReadOnlyList<TemporalGraph> graphs,
-        IReadOnlyList<DataFlow> flows);
+        IReadOnlyList<TemporalGraph> graphs);
 }

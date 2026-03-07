@@ -21,4 +21,10 @@ public interface IManageFunctionLibraryUseCase
     void UpdateStorages(IEnumerable<StorageType> storages);
     StorageType? GetStorageById(string storageId);
     List<StorageType>? GetStorages();
+
+    void AddFlows(IEnumerable<FlowType> flows);
+    void RemoveFlows(IEnumerable<string> flows);
+    void UpdateFlows(IEnumerable<FlowType> flows);
+    FlowType? GetFlowById(string flowId);
+    List<FlowType>? GetFlows();
 }

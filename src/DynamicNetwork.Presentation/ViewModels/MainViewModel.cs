@@ -1,22 +1,19 @@
 ﻿using DynamicNetwork.Application.Dtos;
-using DynamicNetwork.Application.Interfaces.Ports;
 using DynamicNetwork.Application.Interfaces.Providers;
 using DynamicNetwork.Application.Interfaces.Repositories;
 using DynamicNetwork.Application.Interfaces.Session;
-using DynamicNetwork.Application.Interfaces.UseCases;
 using DynamicNetwork.Application.Interfaces.UseCases.Analysis;
 using DynamicNetwork.Application.Interfaces.UseCases.Configuration;
 using DynamicNetwork.Application.Interfaces.UseCases.Graphs;
 using DynamicNetwork.Application.Interfaces.UseCases.Library;
 using DynamicNetwork.Application.Interfaces.UseCases.Reachability;
-using DynamicNetwork.Application.UseCases.Configuration;
 using DynamicNetwork.Domain.Configuration;
 using DynamicNetwork.Domain.Enums;
 using DynamicNetwork.Domain.Graph;
 using DynamicNetwork.Infrastructure.Adapters.VisualGraph;
 using DynamicNetwork.Presentation.Commands;
 using DynamicNetwork.Presentation.Services;
-using System;
+using DynamicNetwork.Presentation.ViewModels.Configuration;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
@@ -30,10 +27,10 @@ public class MainViewModel : ViewModelBase
     private readonly IGraphSessionManager _graphSessionManager;
     private readonly IFunctionLibraryProvider _libraryProvider;
     private readonly IStructConfigurationRepository _configRepository;
-    private readonly IDataFlowRepository _flowRepository;
     private readonly ICheckReachabilityUseCase _reachabilityUseCase;
     private readonly IAnalyzeGraphStructureUseCase _analyzerUseCase;
     private readonly IExportConfigurationUseCase _exportUseCase;
+    private readonly IExportFunctionLibraryUseCase _exportLibraryUseCase;
     private readonly IEditStructConfigurationUseCase _editStructUseCase;
     private readonly ISynthesizeConfigurationUseCase _synthesizeUseCase;
     private readonly IImportFunctionLibraryUseCase _importLibraryUseCase;
@@ -46,9 +43,9 @@ public class MainViewModel : ViewModelBase
     private TopologyReachabilityViewModel? _reachabilityViewModel;
     private AnalysisResult? _analysisResult;
     private FunctionalLibraryViewModel? _libraryViewModel;
-    private DataFlowViewModel? _dataFlowViewModel;
     private StructConfigurationViewModel? _structConfigViewModel;
     private string? _currentSessionId;
+    private bool _applyToAllGraphs = false;
 
     public IDialogService DialogService => _dialogService;
 
@@ -71,7 +68,8 @@ public class MainViewModel : ViewModelBase
             SetField(ref _currentGraph, value);
             if (value != null)
             {
-                VisualGraphViewModel.SetGraph(value);
+                var config = CurrentGraph != null ? _configRepository.GetByInterval(CurrentGraph.Interval) : null;
+                VisualGraphViewModel.SetGraph(value, config);
                 AnalysisResult = _analyzerUseCase.Execute(value);
             }
         }
@@ -81,6 +79,12 @@ public class MainViewModel : ViewModelBase
     {
         get => _selectedLink;
         set => SetField(ref _selectedLink, value);
+    }
+
+    public bool ApplyToAllGraphs
+    {
+        get => _applyToAllGraphs;
+        set => SetField(ref _applyToAllGraphs, value);
     }
 
     public TopologyReachabilityViewModel ReachabilityViewModel
@@ -112,19 +116,6 @@ public class MainViewModel : ViewModelBase
         }
     }
 
-    public DataFlowViewModel? DataFlowViewModel
-    {
-        get
-        {
-            if (_dataFlowViewModel == null)
-            {
-                _dataFlowViewModel = new DataFlowViewModel(this, _flowRepository);
-                OnPropertyChanged(nameof(DataFlowViewModel));
-            }
-            return _dataFlowViewModel;
-        }
-    }
-
     public StructConfigurationViewModel StructConfigViewModel
     {
         get
@@ -142,12 +133,10 @@ public class MainViewModel : ViewModelBase
 
     public ICommand LoadTemporalGraphCommand => new RelayCommand(LoadTemporalGraph);
     public ICommand LoadFunctionLibraryCommand => new RelayCommand(LoadFunctionLibrary);
-    public ICommand MakeRightDirectionCommand => new RelayCommand(MakeRightDirection);
-    public ICommand MakeLeftCommand => new RelayCommand(MakeLeftDirection);
-    public ICommand MakeUndirectedCommand => new RelayCommand(MakeUndirected);
+    public ICommand ExportFunctionalLibraryCommand => new RelayCommand(ExportFunctionLibrary);
     public ICommand CycleDirectionCommand => new RelayCommand<Link>(CycleDirection);
+    public ICommand SetDirectionCommand => new RelayCommand<LinkDirection>(SetDirection);
     public ICommand ExportXmlCommand => new RelayCommand(ExportXml);
-    public ICommand SynthesizeConfigCommand => new RelayCommand(SynthesizeConfiguration);
 
     public MainViewModel(
         IDialogService dialogService,
@@ -155,30 +144,31 @@ public class MainViewModel : ViewModelBase
         IGraphSessionManager graphSessionManager,
         IFunctionLibraryProvider libraryProvider,
         IStructConfigurationRepository configRepository,
-        IDataFlowRepository flowRepository,
         ICheckReachabilityUseCase reachabilityUseCase,
         IAnalyzeGraphStructureUseCase analyzerUseCase,
         IExportConfigurationUseCase exportUseCase,
         IEditStructConfigurationUseCase editStructUseCase,
         ISynthesizeConfigurationUseCase synthesizeUseCase,
         IImportFunctionLibraryUseCase importLibraryUseCase,
-        IManageFunctionLibraryUseCase manageLibraryUseCase)
+        IExportFunctionLibraryUseCase exportLibraryUseCase,
+        IManageFunctionLibraryUseCase manageLibraryUseCase,
+        CytoscapeGraphAdapter cytoscapeAdapter,
+        IGraphVisualizationService visualizationService)
     {
-        MsaglGraphAdapter adapter = new MsaglGraphAdapter();
-        _visualGraphViewModel = new VisualGraphViewModel(adapter);
+        _visualGraphViewModel = new VisualGraphViewModel(cytoscapeAdapter, visualizationService);
 
         _dialogService = dialogService;
         _loadGraphsUseCase = loadGraphsUseCase;
         _graphSessionManager = graphSessionManager;
         _libraryProvider = libraryProvider;
         _configRepository = configRepository;
-        _flowRepository = flowRepository;
         _reachabilityUseCase = reachabilityUseCase;
         _analyzerUseCase = analyzerUseCase;
         _exportUseCase = exportUseCase;
         _editStructUseCase = editStructUseCase;
         _synthesizeUseCase = synthesizeUseCase;
         _importLibraryUseCase = importLibraryUseCase;
+        _exportLibraryUseCase = exportLibraryUseCase;
         _manageLibraryUseCase = manageLibraryUseCase;
     }
 
@@ -236,61 +226,30 @@ public class MainViewModel : ViewModelBase
         }
     }
 
-    #region Link direction editing (ИСПРАВЛЕНО: иммутабельность)
-
-    private void MakeRightDirection()
+    private void ExportFunctionLibrary()
     {
-        if (SelectedLink == null || _currentSessionId == null || CurrentGraph == null) return;
+        var path = _dialogService.ShowSaveFileDialog(
+            "lib",
+            "XML files (*.xml)|*.xml|All files (*.*)|*.*",
+            "C:\\");
 
-        var updatedGraph = _graphSessionManager.UpdateLinkDirection(
-            _currentSessionId,
-            CurrentGraph.Index,
-            SelectedLink.NodeA,
-            SelectedLink.NodeB,
-            LinkDirection.Right);
+        if (path == null) return;
 
-        UpdateGraphInCollection(updatedGraph);
+        try
+        {
+            _exportLibraryUseCase.Execute(path);   
+        }
+        catch (Exception ex)
+        {
+            _dialogService.ShowError($"Ошибка выгрузки библиотеки: {ex.Message}");
+        }
     }
 
-    private void MakeUndirected()
-    {
-        if (SelectedLink == null || _currentSessionId == null || CurrentGraph == null) return;
-
-        var updatedGraph = _graphSessionManager.UpdateLinkDirection(
-            _currentSessionId,
-            CurrentGraph.Index,
-            SelectedLink.NodeA,
-            SelectedLink.NodeB,
-            LinkDirection.Undirected);
-
-        UpdateGraphInCollection(updatedGraph);
-    }
-
-    private void MakeLeftDirection()
-    {
-        if (SelectedLink == null || _currentSessionId == null || CurrentGraph == null) return;
-
-        var updatedGraph = _graphSessionManager.UpdateLinkDirection(
-            _currentSessionId,
-            CurrentGraph.Index,
-            SelectedLink.NodeA,
-            SelectedLink.NodeB,
-            LinkDirection.Left);
-
-        UpdateGraphInCollection(updatedGraph);
-    }
+    #region Link direction editing
 
     private void CycleDirection(Link? link)
     {
         if (link == null || _currentSessionId == null || CurrentGraph == null) return;
-
-        var nextDirection = link.Direction switch
-        {
-            LinkDirection.Undirected => LinkDirection.Right,
-            LinkDirection.Right => LinkDirection.Left,
-            LinkDirection.Left => LinkDirection.Undirected,
-            _ => LinkDirection.Undirected
-        };
 
         var updatedGraph = _graphSessionManager.UpdateLinkDirectionCycled(
             _currentSessionId,
@@ -301,123 +260,79 @@ public class MainViewModel : ViewModelBase
         UpdateGraphInCollection(updatedGraph);
     }
 
+    private void SetDirection(LinkDirection direction)
+    {
+        if (!ValidateEditContext()) return;
+
+        TemporalGraph? updatedGraph = null;
+        List<TemporalGraph>? updatedGraphs = null;
+
+        if (ApplyToAllGraphs)
+        {
+            updatedGraphs = _graphSessionManager.UpdateSameLinkDirection(
+                _currentSessionId!,
+                CurrentGraph!.Index,
+                SelectedLink!.NodeA,
+                SelectedLink!.NodeB,
+                direction);
+
+            UpdateAllGraphsInCollection(updatedGraphs);
+        }
+        else
+        {
+            updatedGraph = _graphSessionManager.UpdateLinkDirection(
+                _currentSessionId!,
+                CurrentGraph!.Index,
+                SelectedLink!.NodeA,
+                SelectedLink!.NodeB,
+                direction);
+
+            UpdateGraphInCollection(updatedGraph);
+        }
+    }
+
+    private bool ValidateEditContext()
+    {
+        return SelectedLink != null && _currentSessionId != null && CurrentGraph != null;
+    }
+
     private void UpdateGraphInCollection(TemporalGraph updatedGraph)
     {
         var index = TemporalGraphs.IndexOf(CurrentGraph!);
         if (index >= 0)
         {
             TemporalGraphs[index] = updatedGraph;
+
             CurrentGraph = updatedGraph;
         }
+
+        if (IntervalsViewModel != null)
+        {
+            IntervalsViewModel.Selected = CurrentGraph;
+        }
     }
+
+    private void UpdateAllGraphsInCollection(List<TemporalGraph> updatedGraphs)
+    {
+        var currentInterval = CurrentGraph?.Interval;
+
+        TemporalGraphs.Clear();
+        foreach (var g in updatedGraphs)
+            TemporalGraphs.Add(g);
+
+        if (currentInterval != null)
+        {
+            CurrentGraph = updatedGraphs.FirstOrDefault(g => g.Interval.Equals(currentInterval));
+        }
+
+        if (IntervalsViewModel != null)
+        {
+            IntervalsViewModel.Selected = CurrentGraph;
+        }
+    }
+
 
     #endregion
-
-    private void SynthesizeConfiguration()
-    {
-        var graphs = TemporalGraphs.ToList();
-        var flows = _flowRepository.GetAll().ToList();
-        var library = _libraryProvider.GetCurrent();
-
-        if (!graphs.Any())
-        {
-            _dialogService.ShowError("Необходимо загрузить временные графы");
-            return;
-        }
-
-        if (!flows.Any())
-        {
-            _dialogService.ShowError("Необходимо определить хотя бы один поток данных");
-            return;
-        }
-
-        if (library.Processes.Count == 0 && library.Transports.Count == 0 && library.Storages.Count == 0)
-        {
-            _dialogService.ShowError("Необходимо загрузить библиотеку функций");
-            return;
-        }
-
-        try
-        {
-
-            var allConfigs = _configRepository.GetAll().ToList();
-
-            var nodeInputs = new Dictionary<NodeConfiguration, TimeInterval>();
-            var inputIntervals = new List<TimeInterval>();
-
-            foreach (var config in allConfigs)
-            {
-                foreach (var node in config.Nodes)
-                {
-                    if (node.Inputs.Any(input => !string.IsNullOrWhiteSpace(input)))
-                    {
-                        nodeInputs[node] = config.Interval;
-                        inputIntervals.Add(config.Interval);
-                    }
-                }
-            }
-
-            var outputNodes = new List<NodeConfiguration>();
-            var outputIntervals = new List<TimeInterval>();
-
-            foreach (var config in allConfigs)
-            {
-                foreach (var node in config.Nodes)
-                {
-                    if (node.Outputs.Any(output => !string.IsNullOrWhiteSpace(output)))
-                    {
-                        outputNodes.Add(node);
-                        outputIntervals.Add(config.Interval);
-                    }
-                }
-            }
-
-            if (!nodeInputs.Any())
-            {
-                _dialogService.ShowError(
-                    "Не найдены входные узлы!\n" +
-                    "Укажите входные типы данных (поле 'Входные типы') для хотя бы одного узла в конфигурации.");
-                return;
-            }
-
-            if (!outputNodes.Any())
-            {
-                _dialogService.ShowError(
-                    "Не найдены выходные узлы!\n" +
-                    "Укажите выходные типы данных (поле 'Выходные типы') для хотя бы одного узла в конфигурации.");
-                return;
-            }
-
-            var customInterval = new TimeInterval(
-                start: inputIntervals.Min(interval => interval.Start),
-                end: outputIntervals.Max(interval => interval.End)
-            );
-
-            var request = new StructConfigurationRequestDto
-            {
-                NodeInputs = nodeInputs,
-                OutputNodes = outputNodes,
-                CustomInterval = customInterval
-            };
-
-            var configs = _synthesizeUseCase.Execute(request, graphs, flows);
-
-            foreach (var config in _configRepository.GetAll().ToList())
-                _configRepository.Delete(config.Interval);
-
-            foreach (var config in configs)
-                _configRepository.Add(config);
-
-            _dialogService.ShowInfo(
-                $"Синтез завершён успешно!\n" +
-                "Воспользуйтесь кнопкой Экспорт" + 
-                "чтобы сохранить результат в xml");
-        }
-        catch (Exception ex)
-        {
-            _dialogService.ShowError($"Ошибка синтеза конфигурации:\n{ex.Message}");
-        }
-    }
 
     private void ExportXml()
     {
@@ -436,6 +351,14 @@ public class MainViewModel : ViewModelBase
         catch (Exception ex)
         {
             _dialogService.ShowError($"Ошибка экспорта: {ex.Message}");
+        }
+    }
+
+    public void NotifyConfigChanged(StructConfiguration newConfig)
+    {
+        if (CurrentGraph != null && CurrentGraph.Interval.Equals(newConfig.Interval))
+        {
+            VisualGraphViewModel.UpdateConfiguration(newConfig);
         }
     }
 }

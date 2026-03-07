@@ -13,7 +13,7 @@ public sealed class FlowRoutePlan
     /// <summary>
     /// Поток данных для маршрутизации.
     /// </summary>
-    public required DataFlow Flow { get; init; }
+    public required string Flow { get; init; }
 
     /// <summary>
     /// Путь достижимости для потока.

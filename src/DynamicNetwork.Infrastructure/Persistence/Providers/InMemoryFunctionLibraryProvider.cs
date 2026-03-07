@@ -12,7 +12,8 @@ public class InMemoryFunctionLibraryProvider : IFunctionLibraryProvider
         _library = new FunctionLibrary(
             Enumerable.Empty<ProcessType>(),
             Enumerable.Empty<TransportType>(),
-            Enumerable.Empty<StorageType>());
+            Enumerable.Empty<StorageType>(),
+            Enumerable.Empty<FlowType>());
     }
 
     public InMemoryFunctionLibraryProvider(FunctionLibrary initialLibrary)

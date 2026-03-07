@@ -1,4 +1,7 @@
-﻿using DynamicNetwork.Application.Dtos;
+﻿// WARNING!
+// THIS MODULE IS UNUSED IN CURRENT VERSION AND WILL BE REMOVED IN NEXT VERSIONS
+
+using DynamicNetwork.Application.Dtos;
 using DynamicNetwork.Application.Interfaces.Providers;
 using DynamicNetwork.Application.Interfaces.Repositories;
 using DynamicNetwork.Application.Interfaces.UseCases.Configuration;
@@ -32,10 +35,9 @@ public class SynthesizeConfigurationUseCase : ISynthesizeConfigurationUseCase
 
     public IReadOnlyList<StructConfiguration> Execute(
         StructConfigurationRequestDto requestDto,
-        IReadOnlyList<TemporalGraph> graphs,
-        IReadOnlyList<DataFlow> flows)
+        IReadOnlyList<TemporalGraph> graphs)
     {
-        ValidateRequest(requestDto, flows);
+        /*ValidateRequest(requestDto, flows);
 
         var library = _libraryProvider.GetCurrent();
         var baseConfigurations = _configRepo.GetAll();
@@ -96,8 +98,13 @@ public class SynthesizeConfigurationUseCase : ISynthesizeConfigurationUseCase
         }
 
         return synthesizedConfigs;
+
+        */
+
+        return null;
     }
 
+    /*
     private void ValidateRequest(StructConfigurationRequestDto request, IReadOnlyList<DataFlow> flows)
     {
         if (request.NodeInputs == null || !request.NodeInputs.Any())
@@ -107,4 +114,6 @@ public class SynthesizeConfigurationUseCase : ISynthesizeConfigurationUseCase
         if (flows == null || !flows.Any())
             throw new ArgumentException("At least one data flow must be specified");
     }
+
+    */
 }

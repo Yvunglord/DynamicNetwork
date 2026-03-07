@@ -31,6 +31,9 @@ public class FunctionalLibraryViewModel : ViewModelBase
     private string? _storageAllowedFlowType;
     private StorageType? _selectedStorage;
 
+    private string? _flowId;
+    private FlowType? _selectedFlow;
+
     public ObservableCollection<ProcessType> Processes { get; }
         = new ObservableCollection<ProcessType>();
 
@@ -39,6 +42,9 @@ public class FunctionalLibraryViewModel : ViewModelBase
 
     public ObservableCollection<StorageType> Storages { get; }
         = new ObservableCollection<StorageType>();
+
+    public ObservableCollection<FlowType> Flows { get; }
+        = new ObservableCollection<FlowType>();
 
     public string? ProcessId
     {
@@ -153,6 +159,25 @@ public class FunctionalLibraryViewModel : ViewModelBase
         }
     }
 
+    public string? FlowId
+    {
+        get => _flowId;
+        set => SetField(ref _flowId, value);
+    }
+
+    public FlowType? SelectedFlow
+    {
+        get => _selectedFlow;
+        set
+        {
+            SetField(ref _selectedFlow, value);
+            if (value != null)
+            {
+                FlowId = value.Id;
+            }
+        }
+    }
+
     public ICommand AddProcessCommand => new RelayCommand(AddProcess);
     public ICommand RemoveProcessCommand => new RelayCommand(RemoveProcess, CanRemoveProcess);
     public ICommand UpdateProcessCommand => new RelayCommand(UpdateProcess, CanUpdateProcess);
@@ -164,6 +189,9 @@ public class FunctionalLibraryViewModel : ViewModelBase
     public ICommand AddStorageCommand => new RelayCommand(AddStorage);
     public ICommand RemoveStorageCommand => new RelayCommand(RemoveStorage, CanRemoveStorage);
     public ICommand UpdateStorageCommand => new RelayCommand(UpdateStorage, CanUpdateStorage);
+
+    public ICommand AddFlowCommand => new RelayCommand(AddFlow);
+    public ICommand RemoveFlowCommand => new RelayCommand(RemoveFlow, CanRemoveFlow);
 
     public FunctionalLibraryViewModel(
         MainViewModel parent,
@@ -198,9 +226,16 @@ public class FunctionalLibraryViewModel : ViewModelBase
             Storages.Add(storage);
         }
 
+        Flows.Clear();
+        foreach (var flow in library.Flows)
+        {
+            Flows.Add(flow);
+        }
+
         OnPropertyChanged(nameof(Processes));
         OnPropertyChanged(nameof(Transports));
         OnPropertyChanged(nameof(Storages));
+        OnPropertyChanged(nameof(Flows));
     }
 
     #region Processes Management
@@ -230,7 +265,6 @@ public class FunctionalLibraryViewModel : ViewModelBase
 
             LoadLibraryFromProvider();
             ClearProcessForm();
-            _parent.DialogService.ShowInfo($"Процесс '{process.Id}' добавлен");
         }
         catch (Exception ex)
         {
@@ -249,7 +283,6 @@ public class FunctionalLibraryViewModel : ViewModelBase
             LoadLibraryFromProvider();
             SelectedProcess = null;
             ClearProcessForm();
-            _parent.DialogService.ShowInfo($"Процесс '{_selectedProcess.Id}' удалён");
         }
         catch (Exception ex)
         {
@@ -278,7 +311,7 @@ public class FunctionalLibraryViewModel : ViewModelBase
             if (updated != null)
                 SelectedProcess = updated;
 
-            _parent.DialogService.ShowInfo($"Процесс '{updatedProcess.Id}' обновлён");
+            ClearProcessForm();
         }
         catch (Exception ex)
         {
@@ -328,7 +361,6 @@ public class FunctionalLibraryViewModel : ViewModelBase
             _manageLibraryUseCase.AddTransports(new[] { transport });
             LoadLibraryFromProvider();
             ClearTransportForm();
-            _parent.DialogService.ShowInfo($"Транспорт '{transport.Id}' добавлен");
         }
         catch (Exception ex)
         {
@@ -347,7 +379,6 @@ public class FunctionalLibraryViewModel : ViewModelBase
             LoadLibraryFromProvider();
             SelectedTransport = null;
             ClearTransportForm();
-            _parent.DialogService.ShowInfo($"Транспорт '{_selectedTransport.Id}' удалён");
         }
         catch (Exception ex)
         {
@@ -375,7 +406,7 @@ public class FunctionalLibraryViewModel : ViewModelBase
             if (updated != null)
                 SelectedTransport = updated;
 
-            _parent.DialogService.ShowInfo($"Транспорт '{updatedTransport.Id}' обновлён");
+            ClearTransportForm();
         }
         catch (Exception ex)
         {
@@ -419,7 +450,6 @@ public class FunctionalLibraryViewModel : ViewModelBase
             _manageLibraryUseCase.AddStorages(new[] { storage });
             LoadLibraryFromProvider();
             ClearStorageForm();
-            _parent.DialogService.ShowInfo($"Хранилище '{storage.Id}' добавлено");
         }
         catch (Exception ex)
         {
@@ -438,7 +468,6 @@ public class FunctionalLibraryViewModel : ViewModelBase
             LoadLibraryFromProvider();
             SelectedStorage = null;
             ClearStorageForm();
-            _parent.DialogService.ShowInfo($"Хранилище '{_selectedStorage.Id}' удалено");
         }
         catch (Exception ex)
         {
@@ -462,7 +491,7 @@ public class FunctionalLibraryViewModel : ViewModelBase
             if (updated != null)
                 SelectedStorage = updated;
 
-            _parent.DialogService.ShowInfo($"Хранилище '{updatedStorage.Id}' обновлено");
+            ClearStorageForm();
         }
         catch (Exception ex)
         {
@@ -491,6 +520,61 @@ public class FunctionalLibraryViewModel : ViewModelBase
             .Select(t => t.Trim())
             .Where(t => !string.IsNullOrWhiteSpace(t))
             .Distinct();
+    }
+
+    #endregion
+
+    #region Flow Management
+
+    private void AddFlow()
+    {
+        if (!IsFlowFilled())
+            return;
+
+        if (Flows.Any(f => f.Id == FlowId))
+        {
+            _parent.DialogService.ShowError($"Поток с ID '{FlowId}' уже существует");
+            return;
+        }
+
+        try
+        {
+            var flow = new FlowType(FlowId!);
+
+            _manageLibraryUseCase.AddFlows(new[] { flow });
+            LoadLibraryFromProvider();
+            ClearFlowForm();
+        }
+        catch (Exception ex)
+        {
+            _parent.DialogService.ShowError($"Ошибка добавления потока: {ex.Message}");
+        }
+    }
+
+    private void RemoveFlow()
+    {
+        if (_selectedFlow == null)
+            return;
+
+        try
+        {
+            _manageLibraryUseCase.RemoveFlows(new[] { _selectedFlow.Id });
+            LoadLibraryFromProvider();
+            SelectedFlow = null;
+            ClearFlowForm();
+        }
+        catch (Exception ex)
+        {
+            _parent.DialogService.ShowError($"Ошибка удаления потока: {ex.Message}");
+        }
+    }
+
+    private bool CanRemoveFlow() => _selectedFlow != null;
+    private bool IsFlowFilled() => !string.IsNullOrWhiteSpace(_flowId);
+
+    private void ClearFlowForm()
+    {
+        FlowId = null;
     }
 
     #endregion

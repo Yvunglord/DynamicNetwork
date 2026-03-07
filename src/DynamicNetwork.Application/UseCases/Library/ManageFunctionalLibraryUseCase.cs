@@ -38,6 +38,14 @@ public class ManageFunctionalLibraryUseCase : IManageFunctionLibraryUseCase
         _provider.Update(updated);
     }
 
+    public void AddFlows(IEnumerable<FlowType> flows)
+    {
+        var current = _provider.GetCurrent();
+        var updated = current.AddFlows(flows);
+
+        _provider.Update(updated);
+    }
+
     public ProcessType? GetProcessById(string processId)
     {
         var current = _provider.GetCurrent();
@@ -74,6 +82,18 @@ public class ManageFunctionalLibraryUseCase : IManageFunctionLibraryUseCase
         return current.Transports.ToList();
     }
 
+    public FlowType? GetFlowById(string flowId)
+    {
+        var current = _provider.GetCurrent();
+        return current.GetFlowById(flowId);
+    }
+
+    public List<FlowType>? GetFlows()
+    {
+        var current = _provider.GetCurrent();
+        return current.Flows.ToList();
+    }
+
     public void RemoveProcesses(IEnumerable<string> processIds)
     {
         var current = _provider.GetCurrent();
@@ -95,6 +115,13 @@ public class ManageFunctionalLibraryUseCase : IManageFunctionLibraryUseCase
         _provider.Update(updated);
     }
 
+    public void RemoveFlows(IEnumerable<string> flowIds)
+    {
+        var current = _provider.GetCurrent();
+        var updated = current.RemoveFlows(flowIds);
+        _provider.Update(updated);
+    }
+
     public void UpdateProcesses(IEnumerable<ProcessType> processes)
     {
         var current = _provider.GetCurrent();
@@ -113,6 +140,13 @@ public class ManageFunctionalLibraryUseCase : IManageFunctionLibraryUseCase
     {
         var current = _provider.GetCurrent();
         var updated = current.UpdateTransports(transports);
+        _provider.Update(updated);
+    }
+
+    public void UpdateFlows(IEnumerable<FlowType> flows)
+    {
+        var current = _provider.GetCurrent();   
+        var updated = current.UpdateFlows(flows);
         _provider.Update(updated);
     }
 }

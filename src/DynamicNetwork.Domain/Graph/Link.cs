@@ -59,7 +59,8 @@ public sealed class Link
         {
             LinkDirection.Undirected => LinkDirection.Right,
             LinkDirection.Right => LinkDirection.Left,
-            LinkDirection.Left => LinkDirection.Undirected,
+            LinkDirection.Left => LinkDirection.None,
+            LinkDirection.None => LinkDirection.Undirected,
             _ => LinkDirection.Undirected
         });
     }

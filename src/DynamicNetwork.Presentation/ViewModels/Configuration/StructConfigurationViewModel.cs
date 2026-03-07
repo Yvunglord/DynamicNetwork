@@ -7,7 +7,7 @@ using DynamicNetwork.Presentation.Commands;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
-namespace DynamicNetwork.Presentation.ViewModels;
+namespace DynamicNetwork.Presentation.ViewModels.Configuration;
 
 public class StructConfigurationViewModel : ViewModelBase
 {
@@ -39,6 +39,9 @@ public class StructConfigurationViewModel : ViewModelBase
     public ObservableCollection<string> AvailableStorages { get; }
         = new ObservableCollection<string>();
 
+    public ObservableCollection<string> AvailableFlows { get; }
+        = new ObservableCollection<string>();
+
     public TimeInterval SelectedInterval
     {
         get => _selectedInterval;
@@ -62,6 +65,7 @@ public class StructConfigurationViewModel : ViewModelBase
             {
                 LoadAvailableProcesses();
                 LoadAvailableStorages();
+                LoadAvailableFlows();
             }
         }
     }
@@ -79,10 +83,6 @@ public class StructConfigurationViewModel : ViewModelBase
         }
     }
 
-    public ICommand AddNodeConfigCommand => new RelayCommand(AddNodeConfig, CanAddNodeConfig);
-    public ICommand RemoveNodeConfigCommand => new RelayCommand(RemoveNodeConfig, CanRemoveNodeConfig);
-    public ICommand AddLinkConfigCommand => new RelayCommand(AddLinkConfig, CanAddLinkConfig);
-    public ICommand RemoveLinkConfigCommand => new RelayCommand(RemoveLinkConfig, CanRemoveLinkConfig);
     public ICommand LoadFromLibraryCommand => new RelayCommand(LoadFromLibrary);
 
     public StructConfigurationViewModel(
@@ -205,7 +205,7 @@ public class StructConfigurationViewModel : ViewModelBase
             new NodeConfiguration(
                 nodeId,
                 Enumerable.Empty<string>(),
-                Enumerable.Empty<string>(),
+                new Dictionary<string, double>(),
                 Enumerable.Empty<string>(),
                 new Dictionary<string, double>(),
                 Enumerable.Empty<string>()
@@ -222,10 +222,10 @@ public class StructConfigurationViewModel : ViewModelBase
         return new StructConfiguration(interval, nodeConfigs, linkConfigs);
     }
 
-    private void SaveConfigurationToRepository()
+    private StructConfiguration? SaveConfigurationToRepository()
     {
         if (_selectedInterval == TimeInterval.Empty || _currentConfiguration == null)
-            return;
+            return null;
 
         try
         {
@@ -239,15 +239,33 @@ public class StructConfigurationViewModel : ViewModelBase
             );
 
             _currentConfiguration = _editUseCase.Edit(updatedConfig.Interval, updatedConfig);
+
+            return _currentConfiguration;
         }
         catch (Exception ex)
         {
             _parent.DialogService.ShowError($"Ошибка сохранения конфигурации: {ex.Message}");
+            return null;
         }
     }
 
-    private void OnNodeConfigurationChanged() => SaveConfigurationToRepository();
-    private void OnLinkConfigurationChanged() => SaveConfigurationToRepository();
+    private void OnNodeConfigurationChanged()
+    {
+        var config = SaveConfigurationToRepository();
+        if (config != null)
+        {
+            _parent.NotifyConfigChanged(config);
+        }
+    }
+
+    private void OnLinkConfigurationChanged()
+    {
+        var config = SaveConfigurationToRepository();
+        if (config != null)
+        {
+            _parent.NotifyConfigChanged(config);
+        }
+    }
 
     private void LoadAvailableProcesses()
     {
@@ -279,73 +297,15 @@ public class StructConfigurationViewModel : ViewModelBase
         }
     }
 
-    private void AddNodeConfig()
+    private void LoadAvailableFlows()
     {
-        if (_selectedInterval == TimeInterval.Empty) return;
-
-        var newNodeId = $"Node_{NodeConfigurations.Count + 1}";
-
-        var nodeConfig = new NodeConfiguration(
-            newNodeId,
-            Enumerable.Empty<string>(),
-            Enumerable.Empty<string>(),
-            Enumerable.Empty<string>(),
-            new Dictionary<string, double>(),
-            Enumerable.Empty<string>()
-        );
-
-        var nodeVM = new NodeConfigurationViewModel(nodeConfig, OnNodeConfigurationChanged);
-        NodeConfigurations.Add(nodeVM);
-
-        SaveConfigurationToRepository();
-    }
-
-    private bool CanAddNodeConfig() => _selectedInterval != TimeInterval.Empty;
-
-    private void RemoveNodeConfig()
-    {
-        if (SelectedNodeConfig != null)
+        AvailableFlows.Clear();
+        var library = _libraryProvider.GetCurrent();
+        foreach (var flow in library.Flows)
         {
-            NodeConfigurations.Remove(SelectedNodeConfig);
-            SelectedNodeConfig = null;
-
-            SaveConfigurationToRepository();
+            AvailableFlows.Add(flow.Id);
         }
     }
-
-    private bool CanRemoveNodeConfig() => SelectedNodeConfig != null;
-
-    private void AddLinkConfig()
-    {
-        if (_selectedInterval == TimeInterval.Empty) return;
-
-        var linkConfig = new LinkConfiguration(
-            "NodeA",
-            "NodeB",
-            Enumerable.Empty<string>(),
-            Enumerable.Empty<string>()
-        );
-
-        var linkVM = new LinkConfigurationViewModel(linkConfig, OnLinkConfigurationChanged);
-        LinkConfigurations.Add(linkVM);
-
-        SaveConfigurationToRepository();
-    }
-
-    private bool CanAddLinkConfig() => _selectedInterval != TimeInterval.Empty;
-
-    private void RemoveLinkConfig()
-    {
-        if (SelectedLinkConfig != null)
-        {
-            LinkConfigurations.Remove(SelectedLinkConfig);
-            SelectedLinkConfig = null;
-
-            SaveConfigurationToRepository();
-        }
-    }
-
-    private bool CanRemoveLinkConfig() => SelectedLinkConfig != null;
 
     private void LoadFromLibrary()
     {

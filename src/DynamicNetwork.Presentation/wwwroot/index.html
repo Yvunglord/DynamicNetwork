@@ -1,0 +1,185 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Graph Visualizer</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="cytoscape.min.js"></script>
+</head>
+<body>
+    <div id="cy"></div>
+    <script>
+        console.log('Cytoscape загружен:', typeof cytoscape);
+
+        var cy = cytoscape({
+            container: document.getElementById('cy'),
+            elements: [],
+            style: [
+                {
+                    selector: 'node',
+                    style: {
+                        'background-color': '#3498db',
+                        'label': 'data(label)',
+                        'color': '#fff',
+                        'text-valign': 'center',
+                        'text-halign': 'center',
+                        'width': 60,
+                        'height': 60,
+                        'font-size': '12px'
+                    }
+                },
+                {
+                    selector: 'edge',
+                    style: {
+                        'width': 2,
+                        'line-color': '#999',
+                        'target-arrow-color': '#999',
+                        'target-arrow-shape': 'triangle',
+                        'curve-style': 'bezier'
+                    }
+                },
+                {
+                    selector: ':selected',
+                    style: {
+                        'background-color': '#e74c3c',
+                        'line-color': '#e74c3c',
+                        'target-arrow-color': '#e74c3c'
+                    }
+                }
+            ],
+            layout: { name: 'grid', rows: 1 },
+            minZoom: 0.2,
+            maxZoom: 3
+        });
+
+        window.chrome.webview.addEventListener('message', (event) => {
+            console.log('← Сообщение из C#:', event.data);
+            console.log('← Тип данных:', typeof event.data);
+
+            const msg = event.data;
+
+            if (msg.Type === 'LOAD_GRAPH') {
+                console.log('Загрузка графа, элементов:', msg.Data.Elements.length);
+
+                cy.elements().remove();
+
+                const elements = msg.Data.Elements.map(el => ({
+                    data: el.Data
+                }));
+
+                cy.add(elements);
+
+                cy.nodes().forEach(node => {
+                    const isInput = node.data('is-input');
+                    const isOutput = node.data('is-output');
+
+                    node.style({
+                        'background-color': '#ff4d6d',
+                        'shape': 'ellipse',
+                        'width': '60',
+                        'height': '60',
+                        'opacity': '1',
+                        'display': 'element'
+                    });
+
+                    if (isInput === true) {
+                        node.style({
+                            'background-color': '#10c939',
+                            'shape': 'rectangle',
+                            'width': '80',
+                            'height': '40'
+                        });
+                    }
+                    else if (isOutput === true) {
+                        node.style({
+                            'background-color': '#102fc9',
+                            'shape': 'rectangle',
+                            'width': '80',
+                            'height': '40'
+                        });
+                    }
+                });
+
+                cy.edges().forEach(edge => {
+                    const direction = edge.data('direction');
+                    const isConditional = edge.data('is-conditional');
+
+                    edge.style({
+                        'line-color': '#9ca3af',
+                        'target-arrow-color': '#9ca3af',
+                        'source-arrow-color': '#9ca3af',
+                        'line-style': 'solid',
+                        'opacity': '1',
+                        'display': 'element'
+                    });
+
+                    switch (direction) {
+                        case 'Right':
+                            edge.style({
+                                'target-arrow-shape': 'triangle',
+                                'source-arrow-shape': 'none'
+                            });
+                            break;
+
+                        case 'Left':
+                            edge.style({
+                                'source-arrow-shape': 'triangle',
+                                'target-arrow-shape': 'none'
+                            });
+                            break;
+
+                        case 'Undirected':
+                            edge.style({
+                                'target-arrow-shape': 'none',
+                                'source-arrow-shape': 'none'
+                            });
+                            break;
+
+                        case 'Conditional':
+                            edge.style({
+                                'line-color': '#ef4444',
+                                'target-arrow-color': '#ef4444',
+                                'source-arrow-color': '#ef4444',
+                                'target-arrow-shape': 'triangle',
+                                'source-arrow-shape': 'none',
+                                'line-style': 'dashed'
+                            });
+                            break;
+
+                        case 'None':
+                            edge.style({
+                                'display': 'none'
+                            });
+                            break;
+                    }
+                });
+
+                cy.style().update();
+
+                console.log('Элементов в графе:', cy.elements().length);
+
+                cy.layout({
+                    name: msg.Data.Layout || 'cose',
+                    animate: true,
+                    padding: 30
+                }).run();
+            }
+        });
+
+        cy.on('tap', 'node', function(evt){
+            const node = evt.target;
+            window.chrome.webview.postMessage(JSON.stringify({
+                type: 'NODE_CLICKED',
+                id: node.id(),
+                label: node.data('label')
+            }));
+        });
+
+        window.chrome.webview.postMessage(JSON.stringify({
+            type: 'READY'
+        }));
+
+        console.log('JS готов');
+    </script>
+</body>
+</html>

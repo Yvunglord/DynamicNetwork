@@ -14,6 +14,13 @@ public interface IGraphSessionManager
         string nodeB,
         LinkDirection newDirection);
 
+    List<TemporalGraph> UpdateSameLinkDirection(
+        string sessionId,
+        int callerGraphIndex,
+        string nodeA,
+        string nodeB,
+        LinkDirection newDirection);
+
     TemporalGraph UpdateLinkDirectionCycled(
         string sessionId,
         int graphIndex,

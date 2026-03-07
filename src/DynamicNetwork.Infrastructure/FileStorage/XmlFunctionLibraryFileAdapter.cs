@@ -12,6 +12,12 @@ public class XmlFunctionLibraryFileAdapter : IFunctionLibraryFilePort
         var root = doc.Root?.Element("task")
                    ?? throw new InvalidOperationException("Invalid XML");
 
+        var flows = root.Element("flows")?
+            .Elements("type")
+            .Select(f => new FlowType(
+                id: f.Attribute("id")!.Value))
+            ?? Enumerable.Empty<FlowType>();
+
         var processes = root.Element("process")?
             .Elements("type")
             .Select(p => new ProcessType(
@@ -39,7 +45,7 @@ public class XmlFunctionLibraryFileAdapter : IFunctionLibraryFilePort
                     .Select(t => t.Attribute("id")!.Value)
             )) ?? Enumerable.Empty<StorageType>();
 
-        return new FunctionLibrary(processes, transports, storages);
+        return new FunctionLibrary(processes, transports, storages, flows);
     }
 
     public void Save(FunctionLibrary library, string path)
@@ -48,6 +54,8 @@ public class XmlFunctionLibraryFileAdapter : IFunctionLibraryFilePort
 
         var doc = new XDocument(
             new XElement("function_library",
+                new XElement("flows",
+                    library.Flows.Select(f => SerializeFlow(f))),
                 new XElement("processes",
                     library.Processes.Select(p => SerializeProcess(p))),
                 new XElement("transports",
@@ -104,5 +112,12 @@ public class XmlFunctionLibraryFileAdapter : IFunctionLibraryFilePort
             storage.AllowedFlowTypes.Select(t =>
                 new XElement("allowedType", t))
         );
+    }
+
+
+    private XElement SerializeFlow(FlowType flow)
+    {
+        return new XElement("flow",
+            new XAttribute("id", flow.Id));
     }
 }
