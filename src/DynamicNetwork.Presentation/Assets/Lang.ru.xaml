@@ -1,0 +1,162 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- General -->
+    <sys:String x:Key="AppTitle">Dynamic Network</sys:String>
+
+    <!-- Top Panel -->
+    <sys:String x:Key="BtnLoadFile">Загрузить файл</sys:String>
+    <sys:String x:Key="BtnExport">Экспорт</sys:String>
+    <sys:String x:Key="LblInterval">Интервал:</sys:String>
+
+    <!-- Left Sidebar -->
+    <sys:String x:Key="TitleAllVertices">Все устройства</sys:String>
+    <sys:String x:Key="LblProcesses">Процессы:</sys:String>
+    <sys:String x:Key="LblInputs">Входы:</sys:String>
+    <sys:String x:Key="LblOutputs">Выходы:</sys:String>
+    <sys:String x:Key="LblStorages">Хранилища:</sys:String>
+
+    <!-- Main Tabs -->
+    <sys:String x:Key="TabIntervals">Интервалы</sys:String>
+    <sys:String x:Key="TabConnections">Соединения</sys:String>
+    <sys:String x:Key="TabAnalysis">Анализ</sys:String>
+    <sys:String x:Key="TabReachability">Достижимость</sys:String>
+    <sys:String x:Key="TabFunctionalLibrary">Функциональная библиотека</sys:String>
+    <sys:String x:Key="TabConfigurations">Конфигурации</sys:String>
+
+    <!-- Intervals Tab -->
+    <sys:String x:Key="TitleStructurePersistenceIntervals">Интервалы постоянства структуры</sys:String>
+    <sys:String x:Key="LblDuration">Длина:</sys:String>
+    <sys:String x:Key="LblLinkCount">соединений</sys:String>
+    <sys:String x:Key="TitleSelectedInterval">Выбранный интервал</sys:String>
+
+    <!-- Connections Tab -->
+    <sys:String x:Key="TitleConnectionManagement">Управление соединениями</sys:String>
+    <sys:String x:Key="TitleConnectionsCurrentInterval">Соединения текущего интервала</sys:String>
+    <sys:String x:Key="TitleDirectionManagement">Управление направленностью</sys:String>
+    <sys:String x:Key="LblSelectedConnection">Выбранное соединение</sys:String>
+    <sys:String x:Key="BtnDirectedRight">→ Направленное</sys:String>
+    <sys:String x:Key="BtnUndirected">↔ Ненаправленное</sys:String>
+    <sys:String x:Key="BtnDirectedLeft">← Направленное</sys:String>
+    <sys:String x:Key="ChkApplyToAll">Ко всем</sys:String>
+    <sys:String x:Key="TxtChangesSavedUntilSessionEnd">Изменения сохраняются до конца сессии</sys:String>
+
+    <!-- Analysis Tab -->
+    <sys:String x:Key="TitleGraphAnalysis">Анализ графа</sys:String>
+    <sys:String x:Key="LblVertices">Вершин:</sys:String>
+    <sys:String x:Key="LblEdges">Рёбер:</sys:String>
+    <sys:String x:Key="LblDirectedLinks">Направленных:</sys:String>
+    <sys:String x:Key="LblUndirectedLinks">Ненаправленных:</sys:String>
+    <sys:String x:Key="LblIsConnected">Связность:</sys:String>
+    <sys:String x:Key="LblHasCycles">Циклы:</sys:String>
+    <sys:String x:Key="LblDensity">Плотность:</sys:String>
+    <sys:String x:Key="LblDiameter">Диаметр:</sys:String>
+    <sys:String x:Key="LblStronglyConnectedComponents">Компоненты связности:</sys:String>
+
+    <sys:String x:Key="TabAdjacencyMatrix">Матрица смежности</sys:String>
+    <sys:String x:Key="TabIncidenceMatrix">Матрица инцидентности</sys:String>
+
+    <!-- Reachability Tab -->
+    <sys:String x:Key="TitleReachabilityAnalysis">Анализ достижимости</sys:String>
+    <sys:String x:Key="LblSourceVertex">Исходное устройство:</sys:String>
+    <sys:String x:Key="LblTargetVertices">Целевые устройства (через запятую):</sys:String>
+    <sys:String x:Key="LblDataSizeBytes">Размер данных (байт, опционально):</sys:String>
+    <sys:String x:Key="LblTimeInterval">Интервал времени</sys:String>
+    <sys:String x:Key="BtnCalculateReachability">Рассчитать достижимость</sys:String>
+
+    <sys:String x:Key="MsgNoResultYet">Результаты анализа ещё не рассчитаны. Заполните параметры и нажмите «Рассчитать достижимость».</sys:String>
+    <sys:String x:Key="LblPath">Путь:</sys:String>
+    <sys:String x:Key="LblNoPathsFound">Пути не найдены</sys:String>
+    <sys:String x:Key="LblShortestPath">Кратчайший путь:</sys:String>
+    <sys:String x:Key="TxtSteps">шаг(ов)</sys:String>
+
+    <!-- Functional Library -->
+    <sys:String x:Key="TabProcesses">Процессы</sys:String>
+    <sys:String x:Key="TabTransport">Транспорт</sys:String>
+    <sys:String x:Key="TabStorages">Хранилища</sys:String>
+    <sys:String x:Key="TabFlowTypes">Типы потоков</sys:String>
+
+    <!-- Processes Subtab -->
+    <sys:String x:Key="TitleProcessManagement">Управление процессами</sys:String>
+    <sys:String x:Key="LblProcessId">ID процесса:</sys:String>
+    <sys:String x:Key="LblProcessingTime">Время обработки:</sys:String>
+    <sys:String x:Key="LblInputFlowType">Тип входного потока:</sys:String>
+    <sys:String x:Key="LblOutputFlowType">Тип выходного потока:</sys:String>
+    <sys:String x:Key="LblChunkSize">Размер обрабатываемого блока:</sys:String>
+    <sys:String x:Key="BtnAdd">Добавить</sys:String>
+    <sys:String x:Key="BtnUpdate">Обновить</sys:String>
+    <sys:String x:Key="BtnRemove">Удалить</sys:String>
+    <sys:String x:Key="TitleAvailableProcesses">Доступные процессы</sys:String>
+    <sys:String x:Key="LblInputFlowTypeShort">Вход:</sys:String>
+    <sys:String x:Key="LblOutputFlowTypeShort">Выход:</sys:String>
+    <sys:String x:Key="LblProcessingTimeShort">Время:</sys:String>
+    <sys:String x:Key="LblChunkSizeShort">Блок:</sys:String>
+    <sys:String x:Key="HintSelectToEdit">Выберите элемент из списка для редактирования или удаления</sys:String>
+
+    <!-- Transport Subtab -->
+    <sys:String x:Key="TitleTransportManagement">Управление транспортом</sys:String>
+    <sys:String x:Key="LblTransportId">ID транспорта:</sys:String>
+    <sys:String x:Key="LblTransmissionTime">Время передачи:</sys:String>
+    <sys:String x:Key="LblFlowType">Тип потока:</sys:String>
+    <sys:String x:Key="LblCapacity">Емкость:</sys:String>
+    <sys:String x:Key="LblFlowTypeShort">Тип:</sys:String>
+    <sys:String x:Key="LblTransmissionTimeShort">Время:</sys:String>
+    <sys:String x:Key="LblCapacityShort">Емкость:</sys:String>
+    <sys:String x:Key="TitleAvailableTransports">Доступные типы транспорта</sys:String>
+    <sys:String x:Key="HintSelectTransportToEdit">Выберите транспорт из списка для редактирования или удаления</sys:String>
+
+    <!-- Storages Subtab -->
+    <sys:String x:Key="TitleStorageManagement">Управление хранилищами</sys:String>
+    <sys:String x:Key="LblStorageId">ID хранилища:</sys:String>
+    <sys:String x:Key="LblAllowedFlowTypes">Разрешенные типы потоков:</sys:String>
+    <sys:String x:Key="HintAllowedFlowTypesExample">(через запятую, например: 1, 2, 3)</sys:String>
+    <sys:String x:Key="TitleAvailableStorages">Доступные типы хранилищ</sys:String>
+    <sys:String x:Key="HintSelectStorsgeToEdit">Выберите хранилище из списка для редактирования или удаления</sys:String>
+
+    <!-- Flow Types Subtab -->
+    <sys:String x:Key="TitleFlowTypeManagement">Управление типами потоков</sys:String>
+    <sys:String x:Key="LblFlowId">ID типа потока:</sys:String>
+    <sys:String x:Key="TitleAvailableFlowTypes">Доступные типы потоков</sys:String>
+    <sys:String x:Key="HintSelectFlowTypeToEdit">Выберите тип потока из списка для редактирования или удаления</sys:String>
+
+    <!-- Library Import/Export -->
+    <sys:String x:Key="TitleLibraryImportExport">Импорт/Экспорт библиотеки</sys:String>
+    <sys:String x:Key="BtnLoadFromXml">Загрузить из XML</sys:String>
+    <sys:String x:Key="BtnExportToXml">Экспорт в XML</sys:String>
+    <sys:String x:Key="HintLoadXmlLibrary">Загрузите XML файл с описанием процессов для пополнения библиотеки</sys:String>
+
+    <!-- Configurations Tab -->
+    <sys:String x:Key="TitleIntervalSelection">Выбор интервала</sys:String>
+    <sys:String x:Key="BtnUpdateLibrary">Обновить библиотеку</sys:String>
+    <sys:String x:Key="HintSelectInterval">Выберите временной интервал для редактирования конфигураций</sys:String>
+
+    <sys:String x:Key="TitleNodeConfigurations">Конфигурации узлов</sys:String>
+    <sys:String x:Key="TitleNodeSettings">Настройки узла</sys:String>
+    <sys:String x:Key="LblNodeId">ID узла:</sys:String>
+    <sys:String x:Key="LblAllowedProcesses">Разрешенные процессы:</sys:String>
+    <sys:String x:Key="LblAllowedTransports">Разрешенные транспорты:</sys:String>
+
+    <sys:String x:Key="TitleLinkConfigurations">Конфигурации соединений</sys:String>
+    <sys:String x:Key="TitleLinkSettings">Настройки соединения</sys:String>
+    <sys:String x:Key="LblNodeA">Узел A:</sys:String>
+    <sys:String x:Key="LblNodeB">Узел B:</sys:String>
+
+    <!-- Common -->
+    <sys:String x:Key="BtnAddSign">+</sys:String>
+    <sys:String x:Key="BtnRemoveSign">✕</sys:String>
+
+    <sys:String x:Key="TabSettings">Настройки</sys:String>
+    <sys:String x:Key="TitleSettingsLanguage">Язык</sys:String>
+    <sys:String x:Key="LblSelectLanguage">Выберите язык:</sys:String>
+    <sys:String x:Key="LblCurrentLanguage">Текущий язык:</sys:String>
+    <sys:String x:Key="HintLanguageChange">Изменения применяются сразу</sys:String>
+
+    <sys:String x:Key="TitleSettingsGeneral">Общие</sys:String>
+    <sys:String x:Key="HintMoreSettingsSoon">Дополнительные настройки скоро появятся</sys:String>
+
+    <!-- Tips -->
+    <sys:String x:Key="TipChangeDirection">Изменить направление связи</sys:String>
+    <sys:String x:Key="TipChangeDirectionUndirected">Сделать связь ненаправленной</sys:String>
+
+</ResourceDictionary>

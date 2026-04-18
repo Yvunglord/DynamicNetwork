@@ -42,6 +42,8 @@ public class StructConfigurationViewModel : ViewModelBase
     public ObservableCollection<string> AvailableFlows { get; }
         = new ObservableCollection<string>();
 
+    public event Action<TimeInterval>? IntervalChanged;
+
     public TimeInterval SelectedInterval
     {
         get => _selectedInterval;
@@ -51,6 +53,7 @@ public class StructConfigurationViewModel : ViewModelBase
             if (value != TimeInterval.Empty)
             {
                 LoadConfigurationForInterval(value);
+                IntervalChanged?.Invoke(value);
             }
         }
     }

@@ -44,6 +44,7 @@ public class MainViewModel : ViewModelBase
     private AnalysisResult? _analysisResult;
     private FunctionalLibraryViewModel? _libraryViewModel;
     private StructConfigurationViewModel? _structConfigViewModel;
+    private SettingsViewModel? _settingsViewModel;
     private string? _currentSessionId;
     private bool _applyToAllGraphs = false;
 
@@ -121,13 +122,36 @@ public class MainViewModel : ViewModelBase
         get
         {
             if (_structConfigViewModel == null)
+            {
                 _structConfigViewModel = new StructConfigurationViewModel(
                     this,
                     _configRepository,
                     _editStructUseCase,
                     _libraryProvider
                 );
+
+                _structConfigViewModel.IntervalChanged += interval =>
+                {
+                    var graph = GetGraphByInterval(interval);
+                    if (graph != null && CurrentGraph != graph)
+                    {
+                        CurrentGraph = graph;
+                    }
+                };
+            }
+
             return _structConfigViewModel;
+        }
+    }
+
+    public SettingsViewModel SettingsViewModel
+    {
+        get
+        {
+            if (_settingsViewModel == null)
+                _settingsViewModel = new SettingsViewModel();
+
+            return _settingsViewModel;
         }
     }
 

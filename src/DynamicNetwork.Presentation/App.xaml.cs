@@ -28,6 +28,35 @@ namespace DynamicNetwork.Presentation
                 .Build();
         }
 
+        public static void ChangeLanguage(string cultureCode)
+        {
+            var dict = new ResourceDictionary();
+
+            switch(cultureCode)
+            {
+                case "ru":
+                    dict.Source = new Uri("Assets/Lang.ru.xaml", UriKind.Relative);
+                    break;
+
+                case "en":
+                    dict.Source = new Uri("Assets/Lang.en.xaml", UriKind.Relative);
+                    break;
+
+                default:
+                    return;
+            }
+
+            var appResources = Current.Resources.MergedDictionaries;
+
+            var existing = appResources
+                .FirstOrDefault(d => d.Source != null && d.Source.OriginalString.Contains("Lang"));
+
+            if (existing != null)
+                appResources.Remove(existing);
+
+            appResources.Add(dict);
+        }
+
         private void ConfigureServices(IServiceCollection services)
         {
             services.AddDynamicNetworkSynthesis();
