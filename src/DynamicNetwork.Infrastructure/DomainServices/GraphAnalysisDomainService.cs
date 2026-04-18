@@ -434,13 +434,20 @@ public class GraphAnalysisDomainService : IGraphAnalysisDomainService
             int fromIdx = indexMap[edge.NodeA];
             int toIdx = indexMap[edge.NodeB];
 
-            if (edge.Direction == LinkDirection.Undirected || edge.Direction == LinkDirection.Right)
+            if (edge.Direction == LinkDirection.Undirected)
+            {
+                adj[fromIdx].Add(toIdx);
+                adj[toIdx].Add(fromIdx);
+
+                adjTranspose[toIdx].Add(fromIdx);
+                adjTranspose[fromIdx].Add(toIdx);
+            }
+            else if (edge.Direction == LinkDirection.Right)
             {
                 adj[fromIdx].Add(toIdx);
                 adjTranspose[toIdx].Add(fromIdx);
             }
-
-            if (edge.Direction == LinkDirection.Undirected || edge.Direction == LinkDirection.Left)
+            else if (edge.Direction == LinkDirection.Left)
             {
                 adj[toIdx].Add(fromIdx);
                 adjTranspose[fromIdx].Add(toIdx);
@@ -500,32 +507,5 @@ public class GraphAnalysisDomainService : IGraphAnalysisDomainService
                 DFSTranspose(neighbor, adjTranspose, visited);
             }
         }
-    }
-
-    public List<string> GetInAllNodes(TemporalGraph graph, string node)
-    {
-        return graph.Links
-            .Where(e => e.NodeB == node && e.Direction != LinkDirection.Right)
-            .Select(e => e.NodeA)
-            .Distinct()
-            .ToList();
-    }
-
-    public List<string> GetOutAllNodes(TemporalGraph graph, string node)
-    {
-        return graph.Links
-            .Where(e => e.NodeA == node && e.Direction != LinkDirection.Left)
-            .Select(e => e.NodeB)
-            .Distinct()
-            .ToList();
-    }
-
-    public List<string> GetAllConnectedAllNodes(TemporalGraph graph, string node)
-    {
-        return graph.Links
-            .Where(e => e.NodeA == node || e.NodeB == node)
-            .Select(e => e.NodeA == node ? e.NodeB : e.NodeA)
-            .Distinct()
-            .ToList();
     }
 }

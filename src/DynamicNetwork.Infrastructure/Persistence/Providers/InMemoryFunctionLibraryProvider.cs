@@ -18,14 +18,17 @@ public class InMemoryFunctionLibraryProvider : IFunctionLibraryProvider
 
     public InMemoryFunctionLibraryProvider(FunctionLibrary initialLibrary)
     {
-        _library = initialLibrary 
-            ?? throw new ArgumentNullException(nameof(initialLibrary));
+        ArgumentNullException.ThrowIfNull(initialLibrary);
+
+        _library = initialLibrary;
     }
 
     public FunctionLibrary GetCurrent() => _library;
 
     public void Update(FunctionLibrary library)
     {
-        _library = library ?? throw new ArgumentNullException(nameof(library));
+        ArgumentNullException.ThrowIfNull(library);
+
+        _library = library;
     }
 }

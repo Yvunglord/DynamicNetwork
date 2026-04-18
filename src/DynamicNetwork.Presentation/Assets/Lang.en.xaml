@@ -1,0 +1,161 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- General -->
+    <sys:String x:Key="AppTitle">Dynamic Network</sys:String>
+
+    <!-- Top Panel -->
+    <sys:String x:Key="BtnLoadFile">Load File</sys:String>
+    <sys:String x:Key="BtnExport">Export</sys:String>
+    <sys:String x:Key="LblInterval">Interval:</sys:String>
+
+    <!-- Left Sidebar -->
+    <sys:String x:Key="TitleAllVertices">All Vertices</sys:String>
+    <sys:String x:Key="LblProcesses">Processes:</sys:String>
+    <sys:String x:Key="LblInputs">Inputs:</sys:String>
+    <sys:String x:Key="LblOutputs">Outputs:</sys:String>
+    <sys:String x:Key="LblStorages">Storages:</sys:String>
+
+    <!-- Main Tabs -->
+    <sys:String x:Key="TabIntervals">Intervals</sys:String>
+    <sys:String x:Key="TabConnections">Connections</sys:String>
+    <sys:String x:Key="TabAnalysis">Analysis</sys:String>
+    <sys:String x:Key="TabReachability">Reachability</sys:String>
+    <sys:String x:Key="TabFunctionalLibrary">Functional Library</sys:String>
+    <sys:String x:Key="TabConfigurations">Configurations</sys:String>
+
+    <!-- Intervals Tab -->
+    <sys:String x:Key="TitleStructurePersistenceIntervals">Structure Persistence Intervals</sys:String>
+    <sys:String x:Key="LblDuration">Duration:</sys:String>
+    <sys:String x:Key="LblLinkCount">connections</sys:String>
+    <sys:String x:Key="TitleSelectedInterval">Selected Interval</sys:String>
+
+    <!-- Connections Tab -->
+    <sys:String x:Key="TitleConnectionManagement">Connection Management</sys:String>
+    <sys:String x:Key="TitleConnectionsCurrentInterval">Connections of the current interval</sys:String>
+    <sys:String x:Key="TitleDirectionManagement">Direction Management</sys:String>
+    <sys:String x:Key="LblSelectedConnection">Selected Connection</sys:String>
+    <sys:String x:Key="BtnDirectedRight">→ Directed</sys:String>
+    <sys:String x:Key="BtnUndirected">↔ Undirected</sys:String>
+    <sys:String x:Key="BtnDirectedLeft">← Directed</sys:String>
+    <sys:String x:Key="ChkApplyToAll">Apply to all graphs</sys:String>
+    <sys:String x:Key="TxtChangesSavedUntilSessionEnd">Changes are saved until the end of the session</sys:String>
+
+    <!-- Analysis Tab -->
+    <sys:String x:Key="TitleGraphAnalysis">Graph Analysis</sys:String>
+    <sys:String x:Key="LblVertices">Vertices:</sys:String>
+    <sys:String x:Key="LblEdges">Edges:</sys:String>
+    <sys:String x:Key="LblDirectedLinks">Directed:</sys:String>
+    <sys:String x:Key="LblUndirectedLinks">Undirected:</sys:String>
+    <sys:String x:Key="LblIsConnected">Connectivity:</sys:String>
+    <sys:String x:Key="LblHasCycles">Cycles:</sys:String>
+    <sys:String x:Key="LblDensity">Density:</sys:String>
+    <sys:String x:Key="LblDiameter">Diameter:</sys:String>
+    <sys:String x:Key="LblStronglyConnectedComponents">Strongly Connected Components:</sys:String>
+
+    <sys:String x:Key="TabAdjacencyMatrix">Adjacency Matrix</sys:String>
+    <sys:String x:Key="TabIncidenceMatrix">Incidence Matrix</sys:String>
+
+    <!-- Reachability Tab -->
+    <sys:String x:Key="TitleReachabilityAnalysis">Reachability Analysis</sys:String>
+    <sys:String x:Key="LblSourceVertex">Source Vertex:</sys:String>
+    <sys:String x:Key="LblTargetVertices">Target Vertices (comma-separated):</sys:String>
+    <sys:String x:Key="LblDataSizeBytes">Data Size (bytes, optional):</sys:String>
+    <sys:String x:Key="LblTimeInterval">Time Interval</sys:String>
+    <sys:String x:Key="BtnCalculateReachability">Calculate Reachability</sys:String>
+
+    <sys:String x:Key="MsgNoResultYet">Analysis results have not been calculated yet. Fill in the parameters and click "Calculate Reachability".</sys:String>
+    <sys:String x:Key="LblPath">Path:</sys:String>
+    <sys:String x:Key="LblNoPathsFound">No paths found</sys:String>
+    <sys:String x:Key="LblShortestPath">Shortest Path:</sys:String>
+    <sys:String x:Key="TxtSteps">steps</sys:String>
+
+    <!-- Functional Library -->
+    <sys:String x:Key="TabProcesses">Processes</sys:String>
+    <sys:String x:Key="TabTransport">Transport</sys:String>
+    <sys:String x:Key="TabStorages">Storages</sys:String>
+    <sys:String x:Key="TabFlowTypes">Flow Types</sys:String>
+
+    <!-- Processes Subtab -->
+    <sys:String x:Key="TitleProcessManagement">Process Management</sys:String>
+    <sys:String x:Key="LblProcessId">Process ID:</sys:String>
+    <sys:String x:Key="LblProcessingTime">Processing Time:</sys:String>
+    <sys:String x:Key="LblInputFlowType">Input Flow Type:</sys:String>
+    <sys:String x:Key="LblOutputFlowType">Output Flow Type:</sys:String>
+    <sys:String x:Key="LblChunkSize">Chunk Size:</sys:String>
+    <sys:String x:Key="BtnAdd">Add</sys:String>
+    <sys:String x:Key="BtnUpdate">Update</sys:String>
+    <sys:String x:Key="BtnRemove">Remove</sys:String>
+    <sys:String x:Key="TitleAvailableProcesses">Available Processes</sys:String>
+    <sys:String x:Key="LblInputFlowTypeShort">Input:</sys:String>
+    <sys:String x:Key="LblOutputFlowTypeShort">Output:</sys:String>
+    <sys:String x:Key="LblProcessingTimeShort">Time:</sys:String>
+    <sys:String x:Key="LblChunkSizeShort">Chunk:</sys:String>
+    <sys:String x:Key="HintSelectToEdit">Select an item from the list to edit or delete</sys:String>
+
+    <!-- Transport Subtab -->
+    <sys:String x:Key="TitleTransportManagement">Transport Management</sys:String>
+    <sys:String x:Key="LblTransportId">Transport ID:</sys:String>
+    <sys:String x:Key="LblTransmissionTime">Transmission Time:</sys:String>
+    <sys:String x:Key="LblFlowType">Flow Type:</sys:String>
+    <sys:String x:Key="LblCapacity">Capacity:</sys:String>
+    <sys:String x:Key="LblFlowTypeShort">Type:</sys:String>
+    <sys:String x:Key="LblTransmissionTimeShort">Time:</sys:String>
+    <sys:String x:Key="LblCapacityShort">Capacity:</sys:String>
+    <sys:String x:Key="TitleAvailableTransports">Available Transport Types</sys:String>
+    <sys:String x:Key="HintSelectTransportToEdit">Select a transport from the list to edit or delete</sys:String>
+
+    <!-- Storages Subtab -->
+    <sys:String x:Key="TitleStorageManagement">Storage Management</sys:String>
+    <sys:String x:Key="LblStorageId">Storage ID:</sys:String>
+    <sys:String x:Key="LblAllowedFlowTypes">Allowed Flow Types:</sys:String>
+    <sys:String x:Key="HintAllowedFlowTypesExample">(comma separated, e.g.: 1, 2, 3)</sys:String>
+    <sys:String x:Key="TitleAvailableStorages">Available Storage Types</sys:String>
+    <sys:String x:Key="HintSelectStorsgeToEdit">Select a storage from the list to edit or delete</sys:String>
+
+    <!-- Flow Types Subtab -->
+    <sys:String x:Key="TitleFlowTypeManagement">Flow Type Management</sys:String>
+    <sys:String x:Key="LblFlowId">Flow Type ID:</sys:String>
+    <sys:String x:Key="TitleAvailableFlowTypes">Available Flow Types</sys:String>
+    <sys:String x:Key="HintSelectFlowTypeToEdit">Select a flow type from the list to edit or delete</sys:String>
+
+    <!-- Library Import/Export -->
+    <sys:String x:Key="TitleLibraryImportExport">Library Import/Export</sys:String>
+    <sys:String x:Key="BtnLoadFromXml">Load from XML</sys:String>
+    <sys:String x:Key="BtnExportToXml">Export to XML</sys:String>
+    <sys:String x:Key="HintLoadXmlLibrary">Load an XML file with process descriptions to replenish the library</sys:String>
+
+    <!-- Configurations Tab -->
+    <sys:String x:Key="TitleIntervalSelection">Interval Selection</sys:String>
+    <sys:String x:Key="BtnUpdateLibrary">Update Library</sys:String>
+    <sys:String x:Key="HintSelectInterval">Select a time interval to edit configurations</sys:String>
+
+    <sys:String x:Key="TitleNodeConfigurations">Node Configurations</sys:String>
+    <sys:String x:Key="TitleNodeSettings">Node Settings</sys:String>
+    <sys:String x:Key="LblNodeId">Node ID:</sys:String>
+    <sys:String x:Key="LblAllowedProcesses">Allowed Processes:</sys:String>
+    <sys:String x:Key="LblAllowedTransports">Allowed Transports:</sys:String>
+
+    <sys:String x:Key="TitleLinkConfigurations">Link Configurations</sys:String>
+    <sys:String x:Key="TitleLinkSettings">Link Settings</sys:String>
+    <sys:String x:Key="LblNodeA">Node A:</sys:String>
+    <sys:String x:Key="LblNodeB">Node B:</sys:String>
+
+    <!-- Common -->
+    <sys:String x:Key="BtnAddSign">+</sys:String>
+    <sys:String x:Key="BtnRemoveSign">✕</sys:String>
+
+    <sys:String x:Key="TabSettings">Settings</sys:String>
+    <sys:String x:Key="TitleSettingsLanguage">Language</sys:String>
+    <sys:String x:Key="LblSelectLanguage">Select language:</sys:String>
+    <sys:String x:Key="LblCurrentLanguage">Current language:</sys:String>
+    <sys:String x:Key="HintLanguageChange">Changes are applied immediately</sys:String>
+
+    <sys:String x:Key="TitleSettingsGeneral">General</sys:String>
+    <sys:String x:Key="HintMoreSettingsSoon">More settings coming soon</sys:String>
+
+    <!-- Tips -->
+    <sys:String x:Key="TipChangeDirection">Change the direction of communication</sys:String>
+    <sys:String x:Key="TipChangeDirectionUndirected">Make the connection non-directional</sys:String>
+</ResourceDictionary>

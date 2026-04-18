@@ -35,7 +35,7 @@ public class XmlConfigurationExportAdapter : IConfigurationExportService
         return new XElement("flows",
             library.Flows.Select(f =>
                 new XElement("type",
-                    new XAttribute("id", f))));
+                    new XAttribute("id", f.Id))));
     }
 
     private XElement BuildProcesses(FunctionLibrary library)
@@ -88,24 +88,23 @@ public class XmlConfigurationExportAdapter : IConfigurationExportService
                 )));
     }
 
-    private XElement BuildStructs(IEnumerable<StructConfiguration> structs)
+    private IEnumerable<XElement> BuildStructs(IEnumerable<StructConfiguration> structs)
     {
         int structId = 1;
 
-        return new XElement("structs",
-            structs.Select(s =>
-            {
-                var structElement = new XElement("struct",
-                    new XAttribute("id", structId++),
-                    new XAttribute("time", s.Interval.Duration),
-                    new XAttribute("start_time", s.Interval.Start),
-                    new XAttribute("end_time", s.Interval.End));
+        return structs.Select(s =>
+        {
+            var structElement = new XElement("struct",
+                new XAttribute("id", structId++),
+                new XAttribute("time", s.Interval.Duration),
+                new XAttribute("start_time", s.Interval.Start),
+                new XAttribute("end_time", s.Interval.End));
 
-                structElement.Add(BuildStructElements(s));
-                structElement.Add(BuildStructLinks(s));
+            structElement.Add(BuildStructElements(s));
+            structElement.Add(BuildStructLinks(s));
 
-                return structElement;
-            }));
+            return structElement;
+        });
     }
 
     private IEnumerable<XElement> BuildStructElements(StructConfiguration structConfig)

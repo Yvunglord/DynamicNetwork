@@ -58,7 +58,7 @@
                                           Width="20"
                                           Height="16"
                                           Margin="0,0,6,0"/>
-                                <TextBlock Text="Загрузить файл" 
+                                <TextBlock Text="{DynamicResource BtnLoadFile}" 
                                                VerticalAlignment="Center"/>
                             </StackPanel>
                         </DataTemplate>
@@ -67,7 +67,7 @@
 
                 <Separator Width="1" Height="20" Background="#E0E0E0" Margin="5,0"/>
 
-                <TextBlock Text="Интервал:" 
+                <TextBlock Text="{DynamicResource LblInterval}" 
                        VerticalAlignment="Center" 
                        Margin="5,0,5,0"
                        Foreground="#2C3E50"/>
@@ -86,7 +86,7 @@
 
                 <Separator Width="1" Height="20" Background="#E0E0E0" Margin="5,0"/>
 
-                <Button Content="Экспорт"
+                <Button Content="{DynamicResource BtnExport}"
                         Command="{Binding ExportXmlCommand}"
                         Padding="10,5" 
                         Margin="0,0,10,0"
@@ -128,22 +128,83 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <TextBlock Text="Все устройства" 
+                        <TextBlock Text="{DynamicResource TitleAllVertices}" 
                                    FontWeight="SemiBold" 
                                    Margin="0,0,0,10"
                                    Foreground="#2C3E50"/>
                         <ListBox Grid.Row="1"
-                                 ItemsSource="{Binding CurrentGraph.AllNetworkNodes}"
+                                 ItemsSource="{Binding StructConfigViewModel.NodeConfigurations}"
                                  Background="Transparent">
+
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Padding="8,6" 
-                                            Margin="0,2" 
-                                            CornerRadius="4"
+                                    <Border Padding="10"
+                                            Margin="0,4"
+                                            CornerRadius="6"
                                             Style="{StaticResource SelectedToBackgroundConverterStyle}">
-                                        <TextBlock Text="{Binding}" 
-                                                   FontSize="13"
-                                                   Foreground="#2C3E50"/>
+
+                                        <StackPanel>
+
+                                            <TextBlock Text="{Binding NodeId}"
+                                                       FontSize="14"
+                                                       FontWeight="Bold"
+                                                       Foreground="#2C3E50"/>
+
+                                            <TextBlock Text="{DynamicResource LblProcesses}"
+                                                       FontWeight="SemiBold"
+                                                       Margin="0,6,0,0"/>
+                                            <ItemsControl ItemsSource="{Binding EnabledProcesses}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding}" FontSize="12"/>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+
+                                            <TextBlock Text="{DynamicResource LblInputs}"
+                                                       FontWeight="SemiBold"
+                                                       Margin="0,6,0,0"/>
+                                            <ItemsControl ItemsSource="{Binding InputVolumes}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock FontSize="12">
+                                                            <Run Text="• "/>
+                                                            <Run Text="{Binding FlowId}"/>
+                                                            <Run Text=": "/>
+                                                            <Run Text="{Binding Volume}"/>
+                                                        </TextBlock>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+
+                                            <TextBlock Text="{DynamicResource LblOutputs}"
+                                                       FontWeight="SemiBold"
+                                                       Margin="0,6,0,0"/>
+                                            <ItemsControl ItemsSource="{Binding Outputs}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding}" FontSize="12"/>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+
+                                            <TextBlock Text="{DynamicResource LblStorages}"
+                                                       FontWeight="SemiBold"
+                                                       Margin="0,6,0,0"/>
+                                            <ItemsControl ItemsSource="{Binding StorageCapacities}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock FontSize="12">
+                                                            <Run Text="• "/>
+                                                            <Run Text="{Binding StorageType}"/>
+                                                            <Run Text=": "/>
+                                                            <Run Text="{Binding Capacity}"/>
+                                                        </TextBlock>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+
+                                        </StackPanel>
                                     </Border>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
@@ -172,7 +233,7 @@
                 <TabControl.ItemContainerStyle>
                     <Style TargetType="TabItem" BasedOn="{StaticResource ModernTabItemStyle}"/>
                 </TabControl.ItemContainerStyle>
-                <TabItem Header="Интервалы">
+                <TabItem Header="{DynamicResource TabIntervals}">
                     <ScrollViewer>
                         <StackPanel Margin="15">
                             <Border Style="{StaticResource InnerCardStyle}">
@@ -190,7 +251,7 @@
                                               Width="25"
                                               Height="25"
                                               Margin="0,0,8,0"/>
-                                        <TextBlock Text="Интервалы постоянства структуры"
+                                        <TextBlock Text="{DynamicResource TitleStructurePersistenceIntervals}"
                                                    FontWeight="SemiBold"
                                                    FontSize="14"
                                                    Foreground="#2C3E50"/>
@@ -215,7 +276,7 @@
                                                                FontWeight="SemiBold"
                                                                FontSize="13"
                                                                Foreground="#2C3E50"/>
-                                                        <TextBlock Text="{Binding Interval.Duration, StringFormat=Длина: {0}}"
+                                                        <TextBlock Text="{Binding Interval.Duration, StringFormat={}{0}}"
                                                                FontSize="11"
                                                                Foreground="#7F8C8D"
                                                                Margin="0,2,0,6"/>
@@ -229,7 +290,7 @@
                                                                       Width="12"
                                                                       Height="12"
                                                                       Margin="0,0,4,0"/>
-                                                                <TextBlock Text="{Binding LinkCount, StringFormat={}{0} соединений}"
+                                                                <TextBlock Text="{Binding LinkCount, StringFormat={}{0} {DynamicResource LblLinkCount}}"
                                                                            FontSize="11"
                                                                            Foreground="#2980B9"
                                                                            FontWeight="Medium"/>
@@ -245,7 +306,7 @@
 
                             <Border Style="{StaticResource StatsPanelStyle}">
                                 <StackPanel>
-                                    <TextBlock Text="Выбранный интервал"
+                                    <TextBlock Text="{DynamicResource TitleSelectedInterval}"
                                                FontSize="12"
                                                Foreground="#7F8C8D"
                                                Margin="0,0,0,4"/>
@@ -269,7 +330,7 @@
                         </StackPanel>
                     </ScrollViewer>
                 </TabItem>
-                <TabItem Header="Соединения">
+                <TabItem Header="{DynamicResource TabConnections}">
                     <ScrollViewer>
                         <StackPanel Margin="15">
                             <Border Style="{StaticResource InnerCardStyle}">
@@ -280,14 +341,14 @@
                                     </Grid.RowDefinitions>
 
                                     <StackPanel Grid.Row="0"
-                                            Orientation="Horizontal"
-                                            Margin="0,0,0,12">
+                                                Orientation="Horizontal"
+                                                Margin="0,0,0,12">
                                         <Path Data="M19,3 L5,3 C3.89,3 3,3.9 3,5 L3,19 C3,20.1 3.89,21 5,21 L19,21 C20.1,21 21,20.1 21,19 L21,5 C21,3.9 20.1,3 19,3 Z M19,19 L5,19 L5,5 L19,5 L19,19 Z M7,12 L12,17 L17,12 L12,7 L7,12 Z" 
-                                          Fill="#27AE60"
-                                          Width="25"
-                                          Height="25"
-                                          Margin="0,0,8,0"/>
-                                        <TextBlock Text="Управление соединениями"
+                                              Fill="#27AE60"
+                                              Width="25"
+                                              Height="25"
+                                              Margin="0,0,8,0"/>
+                                        <TextBlock Text="{DynamicResource TitleConnectionManagement}"
                                                FontWeight="SemiBold"
                                                FontSize="14"
                                                Foreground="#2C3E50"/>
@@ -301,7 +362,7 @@
                                             </Grid.RowDefinitions>
 
                                             <TextBlock Grid.Row="0"
-                                                   Text="Соединения текущего интервала"
+                                                   Text="{DynamicResource TitleConnectionsCurrentInterval}"
                                                    FontWeight="Medium"
                                                    FontSize="12"
                                                    Foreground="#7F8C8D"
@@ -374,7 +435,7 @@
                                     </Grid.RowDefinitions>
 
                                     <TextBlock Grid.Row="0"
-                                               Text="Управление направленностью"
+                                               Text="{DynamicResource TitleDirectionManagement}"
                                                FontWeight="SemiBold"
                                                Foreground="#2C3E50"
                                                Margin="0,0,0,12"/>
@@ -386,7 +447,7 @@
                                                 Padding="12"
                                                 Margin="0,0,0,12">
                                             <StackPanel>
-                                                <TextBlock Text="Выбранное соединение"
+                                                <TextBlock Text="{DynamicResource LblSelectedConnection}"
                                                            FontSize="12"
                                                            Foreground="#7F8C8D"
                                                            Margin="0,0,0,6"/>
@@ -420,7 +481,7 @@
                                                     HorizontalAlignment="Center"
                                                     Margin="0,10,0,0">
 
-                                            <CheckBox Content="Ко всем"
+                                            <CheckBox Content="{DynamicResource ChkApplyToAll}"
                                                       IsChecked="{Binding ApplyToAllGraphs}"
                                                       Margin="0,0,0,10"
                                                       HorizontalAlignment="Center"
@@ -429,7 +490,7 @@
                                             <StackPanel Orientation="Horizontal"
                                                         HorizontalAlignment="Center">
 
-                                                <Button Content="→ Направленное"
+                                                <Button Content="{DynamicResource BtnDirectedRight}"
                                                         Command="{Binding SetDirectionCommand}"
                                                         CommandParameter="{x:Static enums:LinkDirection.Right}"
                                                         Margin="0,0,8,0"
@@ -438,9 +499,9 @@
                                                         Width="140"
                                                         Padding="12,6"
                                                         Focusable="False"
-                                                        ToolTip="Изменить направление связи"/>
+                                                        ToolTip="{DynamicResource TipChangeDirection}"/>
 
-                                                <Button Content="↔ Ненаправленное"
+                                                <Button Content="{DynamicResource BtnUndirected}"
                                                         Command="{Binding SetDirectionCommand}"
                                                         CommandParameter="{x:Static enums:LinkDirection.Undirected}"
                                                         Margin="0,0,8,0"
@@ -449,9 +510,9 @@
                                                         Height="30"
                                                         Padding="12,6"
                                                         Focusable="False"
-                                                        ToolTip="Сделать связь ненаправленной"/>
+                                                        ToolTip="{DynamicResource TipChangeDirectionUndirected}"/>
 
-                                                <Button Content="← Направленное"
+                                                <Button Content="{DynamicResource BtnDirectedLeft}"
                                                         Command="{Binding SetDirectionCommand}"
                                                         CommandParameter="{x:Static enums:LinkDirection.Left}"
                                                         Style="{StaticResource ModernIconButtonStyle}"
@@ -459,11 +520,11 @@
                                                         Height="30"
                                                         Padding="12,6"
                                                         Focusable="False"
-                                                        ToolTip="Изменить направление связи"/>
+                                                        ToolTip="{DynamicResource TipChangeDirection}"/>
                                             </StackPanel>
                                         </StackPanel>
 
-                                        <TextBlock Text="Изменения сохраняются до конца сессии"
+                                        <TextBlock Text="{DynamicResource TxtChangesSavedUntilSessionEnd}"
                                                    FontSize="11"
                                                    Foreground="#27AE60"
                                                    FontStyle="Italic"
@@ -476,7 +537,7 @@
                     </ScrollViewer>
                 </TabItem>
 
-                <TabItem Header="Анализ">
+                <TabItem Header="{DynamicResource TabAnalysis}">
                     <ScrollViewer>
                         <Grid Margin="15">
                             <Grid.RowDefinitions>
@@ -493,15 +554,15 @@
                                     </Grid.ColumnDefinitions>
 
                                     <StackPanel Grid.Column="0" Margin="0,0,20,0">
-                                        <TextBlock Text="Вершин:" FontWeight="SemiBold" Foreground="#2C3E50" Margin="0,0,0,6"/>
-                                        <TextBlock Text="Рёбер:" FontWeight="SemiBold" Foreground="#2C3E50" Margin="0,0,0,6"/>
-                                        <TextBlock Text="Направленных:" FontWeight="SemiBold" Foreground="#2C3E50" Margin="0,0,0,6"/>
-                                        <TextBlock Text="Ненаправленных:" FontWeight="SemiBold" Foreground="#2C3E50" Margin="0,0,0,6"/>
-                                        <TextBlock Text="Связность:" FontWeight="SemiBold" Foreground="#2C3E50" Margin="0,0,0,6"/>
-                                        <TextBlock Text="Циклы:" FontWeight="SemiBold" Foreground="#2C3E50" Margin="0,0,0,6"/>
-                                        <TextBlock Text="Плотность:" FontWeight="SemiBold" Foreground="#2C3E50" Margin="0,0,0,6"/>
-                                        <TextBlock Text="Диаметр:" FontWeight="SemiBold" Foreground="#2C3E50" Margin="0,0,0,6"/>
-                                        <TextBlock Text="Компоненты связности:" FontWeight="SemiBold" Foreground="#2C3E50" Margin="0,0,0,6"/>
+                                        <TextBlock Text="{DynamicResource LblVertices}" FontWeight="SemiBold" Foreground="#2C3E50" Margin="0,0,0,6"/>
+                                        <TextBlock Text="{DynamicResource LblEdges}" FontWeight="SemiBold" Foreground="#2C3E50" Margin="0,0,0,6"/>
+                                        <TextBlock Text="{DynamicResource LblDirectedLinks}" FontWeight="SemiBold" Foreground="#2C3E50" Margin="0,0,0,6"/>
+                                        <TextBlock Text="{DynamicResource LblUndirectedLinks}" FontWeight="SemiBold" Foreground="#2C3E50" Margin="0,0,0,6"/>
+                                        <TextBlock Text="{DynamicResource LblIsConnected}" FontWeight="SemiBold" Foreground="#2C3E50" Margin="0,0,0,6"/>
+                                        <TextBlock Text="{DynamicResource LblHasCycles}" FontWeight="SemiBold" Foreground="#2C3E50" Margin="0,0,0,6"/>
+                                        <TextBlock Text="{DynamicResource LblDensity}" FontWeight="SemiBold" Foreground="#2C3E50" Margin="0,0,0,6"/>
+                                        <TextBlock Text="{DynamicResource LblDiameter}" FontWeight="SemiBold" Foreground="#2C3E50" Margin="0,0,0,6"/>
+                                        <TextBlock Text="{DynamicResource LblStronglyConnectedComponents}" FontWeight="SemiBold" Foreground="#2C3E50" Margin="0,0,0,6"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="1">
                                         <TextBlock Text="{Binding AnalysisResult.VertexCount}" 
@@ -528,7 +589,7 @@
                                 </Grid>
                             </Border>
                             <TabControl Grid.Row="1">
-                                <TabItem Header="Матрица смежности" Style="{StaticResource ModernTabItemStyle}">
+                                <TabItem Header="{DynamicResource TabAdjacencyMatrix}" Style="{StaticResource ModernTabItemStyle}">
                                     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto"/>
@@ -634,7 +695,7 @@
                                     </Grid>
                                 </TabItem>
 
-                                <TabItem Header="Матрица инцидентности" Style="{StaticResource ModernTabItemStyle}">
+                                <TabItem Header="{DynamicResource TabIncidenceMatrix}" Style="{StaticResource ModernTabItemStyle}">
                                     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto"/>
@@ -745,7 +806,7 @@
                     </ScrollViewer>
                 </TabItem>
 
-                <TabItem Header="Достижимость">
+                <TabItem Header="{DynamicResource TabReachability}">
                     <ScrollViewer>
                         <StackPanel Margin="20">
                             <Border Style="{StaticResource InnerCardStyle}">
@@ -756,13 +817,13 @@
                                               Width="25"
                                               Height="25"
                                               Margin="0,0,8,0"/>
-                                        <TextBlock Text="Анализ достижимости"
+                                        <TextBlock Text="{DynamicResource TitleReachabilityAnalysis}"
                                                    FontWeight="SemiBold"
                                                    FontSize="14"
                                                    Foreground="#2C3E50"/>
                                     </StackPanel>
 
-                                    <TextBlock Text="Исходное устройство:"
+                                    <TextBlock Text="{DynamicResource LblSourceVertex}"
                                                FontWeight="Medium"
                                                Foreground="#2C3E50"
                                                Margin="0,0,0,4"/>
@@ -770,7 +831,7 @@
                                              Style="{StaticResource ModernTextBoxStyle}"
                                              Margin="0,0,0,12"/>
 
-                                    <TextBlock Text="Целевые устройства (через запятую):"
+                                    <TextBlock Text="{DynamicResource LblTargetVertices}"
                                                FontWeight="Medium"
                                                Foreground="#2C3E50"
                                                Margin="0,0,0,4"/>
@@ -778,7 +839,7 @@
                                              Style="{StaticResource ModernTextBoxStyle}"
                                              Margin="0,0,0,12"/>
 
-                                    <TextBlock Text="Размер данных (байт, опционально):"
+                                    <TextBlock Text="{DynamicResource LblDataSizeBytes}"
                                                FontWeight="Medium"
                                                Foreground="#2C3E50"
                                                Margin="0,0,0,4"/>
@@ -786,7 +847,7 @@
                                              Style="{StaticResource ModernTextBoxStyle}"
                                              Margin="0,0,0,12"/>
 
-                                    <TextBlock Text="Интервал времени"
+                                    <TextBlock Text="{DynamicResource LblTimeInterval}"
                                                FontWeight="Medium"
                                                Foreground="#2C3E50"
                                                Margin="0,0,0,4"/>
@@ -806,7 +867,7 @@
 
                                     <Button Command="{Binding ReachabilityViewModel.CalculateReachabilityCommand}"
                                             Height="30"
-                                            Content="Рассчитать достижимость"
+                                            Content="{DynamicResource BtnCalculateReachability}"
                                             Padding="12,8"
                                             HorizontalAlignment="Left"
                                             Margin="0,20,0,0"
@@ -827,7 +888,7 @@
                                           Height="20"
                                           Margin="0,0,10,0"
                                           VerticalAlignment="Top"/>
-                                    <TextBlock Text="Результаты анализа ещё не рассчитаны. Заполните параметры и нажмите 'Рассчитать достижимость'."
+                                    <TextBlock Text="{DynamicResource MsgNoResultYet}"
                                                TextWrapping="Wrap"
                                                Foreground="#856404"
                                                FontWeight="Medium"/>
@@ -867,7 +928,7 @@
                                                         Margin="0,0,0,8"
                                                         SnapsToDevicePixels="True">
                                                     <StackPanel>
-                                                        <TextBlock Text="Путь:"
+                                                        <TextBlock Text="{DynamicResource LblPath}"
                                                                    FontWeight="SemiBold"
                                                                    Foreground="#2C3E50"
                                                                    Margin="0,0,0,4"/>
@@ -877,7 +938,7 @@
                                                                    FontFamily="Consolas"
                                                                    Margin="0,0,0,6"/>
 
-                                                        <TextBlock Text="Интервал:"
+                                                        <TextBlock Text="{DynamicResource LblInterval}"
                                                                    FontWeight="SemiBold"
                                                                    Foreground="#2C3E50"
                                                                    Margin="0,0,0,4"/>
@@ -890,7 +951,7 @@
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
 
-                                    <TextBlock Text="Пути не найдены"
+                                    <TextBlock Text="{DynamicResource LblNoPathsFound}"
                                                FontStyle="Italic"
                                                Foreground="#E74C3C"
                                                FontWeight="Medium"
@@ -907,7 +968,7 @@
                                             Visibility="{Binding ReachabilityViewModel.Result.ShortestPathLength, 
                                                           Converter={StaticResource NullToVisibilityConverter}}">
                                         <StackPanel>
-                                            <TextBlock Text="Кратчайший путь:"
+                                            <TextBlock Text="{DynamicResource LblShortestPath}"
                                                        FontWeight="SemiBold"
                                                        Foreground="#1976D2"
                                                        Margin="0,0,0,6"/>
@@ -918,11 +979,11 @@
                                                       Height="20"
                                                       Margin="0,0,8,0"
                                                       VerticalAlignment="Center"/>
-                                                <TextBlock Text="{Binding ReachabilityViewModel.Result.ShortestPathLength, 
-                                                                  StringFormat='{}{0} шаг(ов)'}"
-                                                           FontWeight="Bold"
-                                                           Foreground="#9B59B6"
-                                                           FontSize="16"/>
+                                                <TextBlock FontWeight="Bold" Foreground="#9B59B6" FontSize="16">
+                                                    <Run Text="{Binding ReachabilityViewModel.Result.ShortestPathLength}"/>
+                                                    <Run Text=" "/>
+                                                    <Run Text="{DynamicResource TxtSteps}"/>
+                                                </TextBlock>
                                             </StackPanel>
                                         </StackPanel>
                                     </Border>
@@ -931,11 +992,11 @@
                         </StackPanel>
                     </ScrollViewer>
                 </TabItem>
-                <TabItem Header="Функциональная библиотека" 
+                <TabItem Header="{DynamicResource TabFunctionalLibrary}" 
                          Style="{StaticResource ModernTabItemStyle}">
                     <TabControl Grid.Row="1" Margin="0,15,0,0" 
                                         Style="{StaticResource ModernTabControlStyle}">
-                        <TabItem Header="Процессы" 
+                        <TabItem Header="{DynamicResource TabProcesses}" 
                                  Style="{StaticResource ModernTabItemStyle}">
                             <ScrollViewer>
                                 <StackPanel Margin="20">
@@ -947,7 +1008,7 @@
                                                       Width="25"
                                                       Height="25"
                                                       Margin="0,0,8,0"/>
-                                                <TextBlock Text="Управление процессами"
+                                                <TextBlock Text="{DynamicResource TitleProcessManagement}"
                                                            FontWeight="SemiBold"
                                                            FontSize="14"
                                                            Foreground="#2C3E50"/>
@@ -961,7 +1022,7 @@
                                                 </Grid.ColumnDefinitions>
 
                                                 <StackPanel Grid.Column="0" Margin="0,0,10,0">
-                                                    <TextBlock Text="ID процесса:"
+                                                    <TextBlock Text="{DynamicResource LblProcessId}"
                                                                FontWeight="Medium"
                                                                Foreground="#2C3E50"
                                                                Margin="0,0,0,4"/>
@@ -970,7 +1031,7 @@
                                                              Style="{StaticResource ModernTextBoxStyle}"
                                                              Margin="0,0,0,12"/>
 
-                                                    <TextBlock Text="Время обработки:"
+                                                    <TextBlock Text="{DynamicResource LblProcessingTime}"
                                                                FontWeight="Medium"
                                                                Foreground="#2C3E50"
                                                                Margin="0,0,0,4"/>
@@ -981,7 +1042,7 @@
                                                 </StackPanel>
 
                                                 <StackPanel Grid.Column="1" Margin="5,0,5,0">
-                                                    <TextBlock Text="Тип входного потока:"
+                                                    <TextBlock Text="{DynamicResource LblInputFlowType}"
                                                                FontWeight="Medium"
                                                                Foreground="#2C3E50"
                                                                Margin="0,0,0,4"/>
@@ -990,7 +1051,7 @@
                                                              Style="{StaticResource ModernTextBoxStyle}"
                                                              Margin="0,0,0,12"/>
 
-                                                    <TextBlock Text="Тип выходного потока:"
+                                                    <TextBlock Text="{DynamicResource LblOutputFlowType}"
                                                                FontWeight="Medium"
                                                                Foreground="#2C3E50"
                                                                Margin="0,0,0,4"/>
@@ -1001,7 +1062,7 @@
                                                 </StackPanel>
 
                                                 <StackPanel Grid.Column="2" Margin="10,0,0,0">
-                                                    <TextBlock Text="Размер обрабатываемого блока:"
+                                                    <TextBlock Text="{DynamicResource LblChunkSize}"
                                                                FontWeight="Medium"
                                                                Foreground="#2C3E50"
                                                                Margin="0,0,0,4"/>
@@ -1013,7 +1074,7 @@
                                                     <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
                                                         <Button Command="{Binding LibraryViewModel.AddProcessCommand}"
                                                                 Height="30"
-                                                                Content="Добавить"
+                                                                Content="{DynamicResource BtnAdd}"
                                                                 Padding="12,8"
                                                                 HorizontalAlignment="Left"
                                                                 Margin="0,0,8,0"
@@ -1021,7 +1082,7 @@
 
                                                         <Button Command="{Binding LibraryViewModel.UpdateProcessCommand}"
                                                                 Height="30"
-                                                                Content="Обновить"
+                                                                Content="{DynamicResource BtnUpdate}"
                                                                 Padding="12,8"
                                                                 HorizontalAlignment="Left"
                                                                 Margin="0,0,8,0"
@@ -1029,7 +1090,7 @@
 
                                                         <Button Command="{Binding LibraryViewModel.RemoveProcessCommand}"
                                                                 Height="30"
-                                                                Content="Удалить"
+                                                                Content="{DynamicResource BtnRemove}"
                                                                 Padding="12,8"
                                                                 HorizontalAlignment="Left"
                                                                 Style="{StaticResource ModernIconButtonStyle}"
@@ -1050,7 +1111,7 @@
                                                       Width="25"
                                                       Height="25"
                                                       Margin="0,0,8,0"/>
-                                                <TextBlock Text="Доступные процессы"
+                                                <TextBlock Text="{DynamicResource TitleAvailableProcesses}"
                                                            FontWeight="SemiBold"
                                                            FontSize="14"
                                                            Foreground="#2C3E50"/>
@@ -1092,29 +1153,51 @@
                                                                                    FontWeight="SemiBold"
                                                                                    Foreground="#2C3E50"
                                                                                    FontSize="13"/>
+
                                                                         <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
-                                                                            <TextBlock Text="{Binding InputFlowType, StringFormat={}Вход: {0}}"
+                                                                            <TextBlock Text="{DynamicResource LblInputFlowTypeShort}"
+                                                                                       Foreground="#7F8C8D"
+                                                                                       FontSize="11"
+                                                                                       Margin="0,0,4,0"/>
+                                                                            <TextBlock Text="{Binding InputFlowType}"
                                                                                        Foreground="#7F8C8D"
                                                                                        FontSize="11"
                                                                                        Margin="0,0,10,0"/>
+
                                                                             <TextBlock Text="→"
                                                                                        Foreground="#95A5A6"
                                                                                        FontSize="11"
                                                                                        Margin="0,0,10,0"/>
-                                                                            <TextBlock Text="{Binding OutputFlowType, StringFormat={}Выход: {0}}"
+
+                                                                            <TextBlock Text="{DynamicResource LblOutputFlowTypeShort}"
+                                                                                       Foreground="#7F8C8D"
+                                                                                       FontSize="11"
+                                                                                       Margin="0,0,4,0"/>
+                                                                            <TextBlock Text="{Binding OutputFlowType}"
                                                                                        Foreground="#7F8C8D"
                                                                                        FontSize="11"/>
                                                                         </StackPanel>
+
                                                                         <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
-                                                                            <TextBlock Text="{Binding TimePerUnit, StringFormat={}Время: {0} с}"
+                                                                            <TextBlock Text="{DynamicResource LblProcessingTimeShort}"
+                                                                                       Foreground="#7F8C8D"
+                                                                                       FontSize="11"
+                                                                                       Margin="0,0,4,0"/>
+                                                                            <TextBlock Text="{Binding TimePerUnit}"
                                                                                        Foreground="#7F8C8D"
                                                                                        FontSize="11"
                                                                                        Margin="0,0,10,0"/>
+
                                                                             <TextBlock Text="|"
                                                                                        Foreground="#95A5A6"
                                                                                        FontSize="11"
                                                                                        Margin="0,0,10,0"/>
-                                                                            <TextBlock Text="{Binding ChunkSize, StringFormat={}Блок: {0}}"
+
+                                                                            <TextBlock Text="{DynamicResource LblChunkSizeShort}"
+                                                                                       Foreground="#7F8C8D"
+                                                                                       FontSize="11"
+                                                                                       Margin="0,0,4,0"/>
+                                                                            <TextBlock Text="{Binding ChunkSize}"
                                                                                        Foreground="#7F8C8D"
                                                                                        FontSize="11"/>
                                                                         </StackPanel>
@@ -1126,7 +1209,7 @@
                                                 </ListBox>
                                             </Border>
 
-                                            <TextBlock Text="Выберите процесс из списка для редактирования или удаления"
+                                            <TextBlock Text="{DynamicResource HintSelectToEdit}"
                                                        FontStyle="Italic"
                                                        Foreground="#95A5A6"
                                                        Margin="0,10,0,0"
@@ -1142,7 +1225,7 @@
                                                       Width="25"
                                                       Height="25"
                                                       Margin="0,0,8,0"/>
-                                                <TextBlock Text="Импорт/Экспорт библиотеки"
+                                                <TextBlock Text="{DynamicResource TitleLibraryImportExport}"
                                                            FontWeight="SemiBold"
                                                            FontSize="14"
                                                            Foreground="#2C3E50"/>
@@ -1151,7 +1234,7 @@
                                             <StackPanel Orientation="Horizontal">
                                                 <Button Command="{Binding LoadFunctionLibraryCommand}"
                                                         Height="30"
-                                                        Content="Загрузить из XML"
+                                                        Content="{DynamicResource BtnLoadFromXml}"
                                                         Padding="12,8"
                                                         HorizontalAlignment="Left"
                                                         Margin="0,0,8,0"
@@ -1159,7 +1242,7 @@
 
                                                 <Button Command="{Binding ExportFunctionalLibraryCommand}"
                                                         Height="30"
-                                                        Content="Экспорт в XML"
+                                                        Content="{DynamicResource BtnExportToXml}"
                                                         Padding="12,8"
                                                         HorizontalAlignment="Left"
                                                         Style="{StaticResource ModernIconButtonStyle}"
@@ -1168,7 +1251,7 @@
                                                 </Button>
                                             </StackPanel>
 
-                                            <TextBlock Text="Загрузите XML файл с описанием процессов для пополнения библиотеки"
+                                            <TextBlock Text="{DynamicResource HintLoadXmlLibrary}"
                                                        FontStyle="Italic"
                                                        Foreground="#95A5A6"
                                                        Margin="0,10,0,0"
@@ -1178,7 +1261,7 @@
                                 </StackPanel>
                             </ScrollViewer>
                         </TabItem>
-                        <TabItem Header="Транспорт" 
+                        <TabItem Header="{DynamicResource TabTransport}" 
                                 Style="{StaticResource ModernTabItemStyle}">
                             <ScrollViewer>
                                 <StackPanel Margin="20">
@@ -1190,7 +1273,7 @@
                                                       Width="25"
                                                       Height="25"
                                                       Margin="0,0,8,0"/>
-                                                <TextBlock Text="Управление транспортом"
+                                                <TextBlock Text="{DynamicResource TitleTransportManagement}"
                                                            FontWeight="SemiBold"
                                                            FontSize="14"
                                                            Foreground="#2C3E50"/>
@@ -1203,7 +1286,7 @@
                                                 </Grid.ColumnDefinitions>
 
                                                 <StackPanel Grid.Column="0" Margin="0,0,10,0">
-                                                    <TextBlock Text="ID транспорта:"
+                                                    <TextBlock Text="{DynamicResource LblTransportId}"
                                                                FontWeight="Medium"
                                                                Foreground="#2C3E50"
                                                                Margin="0,0,0,4"/>
@@ -1211,7 +1294,7 @@
                                                              Style="{StaticResource ModernTextBoxStyle}"
                                                              Margin="0,0,0,12"/>
 
-                                                    <TextBlock Text="Время передачи:"
+                                                    <TextBlock Text="{DynamicResource LblTransmissionTime}"
                                                                FontWeight="Medium"
                                                                Foreground="#2C3E50"
                                                                Margin="0,0,0,4"/>
@@ -1221,7 +1304,7 @@
                                                 </StackPanel>
 
                                                 <StackPanel Grid.Column="1" Margin="10,0,0,0">
-                                                    <TextBlock Text="Тип потока:"
+                                                    <TextBlock Text="{DynamicResource LblFlowType}"
                                                                FontWeight="Medium"
                                                                Foreground="#2C3E50"
                                                                Margin="0,0,0,4"/>
@@ -1229,7 +1312,7 @@
                                                              Style="{StaticResource ModernTextBoxStyle}"
                                                              Margin="0,0,0,12"/>
 
-                                                    <TextBlock Text="Емкость:"
+                                                    <TextBlock Text="{DynamicResource LblCapacity}"
                                                                FontWeight="Medium"
                                                                Foreground="#2C3E50"
                                                                Margin="0,0,0,4"/>
@@ -1240,7 +1323,7 @@
                                                     <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
                                                         <Button Command="{Binding LibraryViewModel.AddTransportCommand}"
                                                                 Height="30"
-                                                                Content="Добавить"
+                                                                Content="{DynamicResource BtnAdd}"
                                                                 Padding="12,8"
                                                                 HorizontalAlignment="Left"
                                                                 Margin="0,0,8,0"
@@ -1248,7 +1331,7 @@
 
                                                         <Button Command="{Binding LibraryViewModel.UpdateTransportCommand}"
                                                                 Height="30"
-                                                                Content="Обновить"
+                                                                Content="{DynamicResource BtnUpdate}"
                                                                 Padding="12,8"
                                                                 HorizontalAlignment="Left"
                                                                 Margin="0,0,8,0"
@@ -1256,7 +1339,7 @@
 
                                                         <Button Command="{Binding LibraryViewModel.RemoveTransportCommand}"
                                                                 Height="30"
-                                                                Content="Удалить"
+                                                                Content="{DynamicResource BtnRemove}"
                                                                 Padding="12,8"
                                                                 HorizontalAlignment="Left"
                                                                 Style="{StaticResource ModernIconButtonStyle}"
@@ -1277,7 +1360,7 @@
                                                       Width="25"
                                                       Height="25"
                                                       Margin="0,0,8,0"/>
-                                                <TextBlock Text="Доступные типы транспорта"
+                                                <TextBlock Text="{DynamicResource TitleAvailableTransports}"
                                                            FontWeight="SemiBold"
                                                            FontSize="14"
                                                            Foreground="#2C3E50"/>
@@ -1316,25 +1399,40 @@
 
                                                                     <StackPanel Grid.Column="1">
                                                                         <TextBlock Text="{Binding Id}"
-                                                                                    FontWeight="SemiBold"
-                                                                                    Foreground="#2C3E50"
-                                                                                    FontSize="13"/>
+                                                                                   FontWeight="SemiBold"
+                                                                                   Foreground="#2C3E50"
+                                                                                   FontSize="13"/>
+
                                                                         <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
-                                                                            <TextBlock Text="{Binding FlowType, StringFormat={}Тип: {0}}"
+                                                                            <TextBlock Text="{DynamicResource LblFlowTypeShort}"
                                                                                        Foreground="#7F8C8D"
                                                                                        FontSize="11"
-                                                                                       Margin="0,0,10,0"/>
+                                                                                       Margin="0,0,4,0"/>
+                                                                            <TextBlock Text="{Binding FlowType}"
+                                                                                       Foreground="#7F8C8D"
+                                                                                       FontSize="11"/>
                                                                         </StackPanel>
+
                                                                         <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
-                                                                            <TextBlock Text="{Binding Time, StringFormat={}Время: {0} с}"
+                                                                            <TextBlock Text="{DynamicResource LblTransmissionTimeShort}"
+                                                                                       Foreground="#7F8C8D"
+                                                                                       FontSize="11"
+                                                                                       Margin="0,0,4,0"/>
+                                                                            <TextBlock Text="{Binding Time}"
                                                                                        Foreground="#7F8C8D"
                                                                                        FontSize="11"
                                                                                        Margin="0,0,10,0"/>
+
                                                                             <TextBlock Text="|"
                                                                                        Foreground="#95A5A6"
                                                                                        FontSize="11"
                                                                                        Margin="0,0,10,0"/>
-                                                                            <TextBlock Text="{Binding Capacity, StringFormat={}Емкость: {0}}"
+
+                                                                            <TextBlock Text="{DynamicResource LblCapacityShort}"
+                                                                                       Foreground="#7F8C8D"
+                                                                                       FontSize="11"
+                                                                                       Margin="0,0,4,0"/>
+                                                                            <TextBlock Text="{Binding Capacity}"
                                                                                        Foreground="#7F8C8D"
                                                                                        FontSize="11"/>
                                                                         </StackPanel>
@@ -1346,7 +1444,7 @@
                                                 </ListBox>
                                             </Border>
 
-                                            <TextBlock Text="Выберите транспорт из списка для редактирования или удаления"
+                                            <TextBlock Text="{DynamicResource HintSelectTransportToEdit}"
                                                        FontStyle="Italic"
                                                        Foreground="#95A5A6"
                                                        Margin="0,10,0,0"
@@ -1357,7 +1455,7 @@
                             </ScrollViewer>
                         </TabItem>
 
-                        <TabItem Header="Хранилища" 
+                        <TabItem Header="{DynamicResource TabStorages}" 
                                  Style="{StaticResource ModernTabItemStyle}">
                             <ScrollViewer>
                                 <StackPanel Margin="20">
@@ -1369,7 +1467,7 @@
                                                       Width="25"
                                                       Height="25"
                                                       Margin="0,0,8,0"/>
-                                                <TextBlock Text="Управление хранилищами"
+                                                <TextBlock Text="{DynamicResource TitleStorageManagement}"
                                                            FontWeight="SemiBold"
                                                            FontSize="14"
                                                            Foreground="#2C3E50"/>
@@ -1382,7 +1480,7 @@
                                                 </Grid.ColumnDefinitions>
 
                                                 <StackPanel Grid.Column="0" Margin="0,0,10,0">
-                                                    <TextBlock Text="ID хранилища:"
+                                                    <TextBlock Text="{DynamicResource LblStorageId}"
                                                                FontWeight="Medium"
                                                                Foreground="#2C3E50"
                                                                Margin="0,0,0,4"/>
@@ -1390,7 +1488,7 @@
                                                              Style="{StaticResource ModernTextBoxStyle}"
                                                              Margin="0,0,0,12"/>
 
-                                                    <TextBlock Text="Разрешенные типы потоков:"
+                                                    <TextBlock Text="{DynamicResource LblAllowedFlowTypes}"
                                                                FontWeight="Medium"
                                                                Foreground="#2C3E50"
                                                                Margin="0,0,0,4"/>
@@ -1398,7 +1496,7 @@
                                                              Style="{StaticResource ModernTextBoxStyle}"
                                                              Margin="0,0,0,12"/>
 
-                                                    <TextBlock Text="(через запятую, например: 1, 2, 3)"
+                                                    <TextBlock Text="{DynamicResource HintAllowedFlowTypesExample}"
                                                                FontStyle="Italic"
                                                                Foreground="#95A5A6"
                                                                FontSize="11"
@@ -1409,7 +1507,7 @@
                                                     <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
                                                         <Button Command="{Binding LibraryViewModel.AddStorageCommand}"
                                                                 Height="30"
-                                                                Content="Добавить"
+                                                                Content="{DynamicResource BtnAdd}"
                                                                 Padding="12,8"
                                                                 HorizontalAlignment="Left"
                                                                 Margin="0,0,8,0"
@@ -1417,7 +1515,7 @@
 
                                                         <Button Command="{Binding LibraryViewModel.UpdateStorageCommand}"
                                                                 Height="30"
-                                                                Content="Обновить"
+                                                                Content="{DynamicResource BtnUpdate}"
                                                                 Padding="12,8"
                                                                 HorizontalAlignment="Left"
                                                                 Margin="0,0,8,0"
@@ -1425,7 +1523,7 @@
 
                                                         <Button Command="{Binding LibraryViewModel.RemoveStorageCommand}"
                                                                 Height="30"
-                                                                Content="Удалить"
+                                                                Content="{DynamicResource BtnRemove}"
                                                                 Padding="12,8"
                                                                 HorizontalAlignment="Left"
                                                                 Style="{StaticResource ModernIconButtonStyle}"
@@ -1446,7 +1544,7 @@
                                                       Width="25"
                                                       Height="25"
                                                       Margin="0,0,8,0"/>
-                                                <TextBlock Text="Доступные типы хранилищ"
+                                                <TextBlock Text="{DynamicResource TitleAvailableStorages}"
                                                            FontWeight="SemiBold"
                                                            FontSize="14"
                                                            Foreground="#2C3E50"/>
@@ -1501,7 +1599,7 @@
                                                 </ListBox>
                                             </Border>
 
-                                            <TextBlock Text="Выберите хранилище из списка для редактирования или удаления"
+                                            <TextBlock Text="{DynamicResource HintSelectStorsgeToEdit}"
                                                        FontStyle="Italic"
                                                        Foreground="#95A5A6"
                                                        Margin="0,10,0,0"
@@ -1511,7 +1609,7 @@
                                 </StackPanel>
                             </ScrollViewer>
                         </TabItem>
-                        <TabItem Header="Типы потоков" 
+                        <TabItem Header="{DynamicResource TabFlowTypes}" 
                                  Style="{StaticResource ModernTabItemStyle}">
                             <ScrollViewer>
                                 <StackPanel Margin="20">
@@ -1523,7 +1621,7 @@
                                                       Width="25"
                                                       Height="25"
                                                       Margin="0,0,8,0"/>
-                                                <TextBlock Text="Управление типами потоков"
+                                                <TextBlock Text="{DynamicResource TitleFlowTypeManagement}"
                                                            FontWeight="SemiBold"
                                                            FontSize="14"
                                                            Foreground="#2C3E50"/>
@@ -1536,7 +1634,7 @@
                                                 </Grid.ColumnDefinitions>
 
                                                 <StackPanel Grid.Column="0" Margin="0,0,10,0">
-                                                    <TextBlock Text="ID типа потока:"
+                                                    <TextBlock Text="{DynamicResource LblFlowId}"
                                                                FontWeight="Medium"
                                                                Foreground="#2C3E50"
                                                                Margin="0,0,0,4"/>
@@ -1549,7 +1647,7 @@
                                                     <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
                                                         <Button Command="{Binding LibraryViewModel.AddFlowCommand}"
                                                                 Height="30"
-                                                                Content="Добавить"
+                                                                Content="{DynamicResource BtnAdd}"
                                                                 Padding="12,8"
                                                                 HorizontalAlignment="Left"
                                                                 Margin="0,0,8,0"
@@ -1557,7 +1655,7 @@
 
                                                         <Button Command="{Binding LibraryViewModel.RemoveFlowCommand}"
                                                                 Height="30"
-                                                                Content="Удалить"
+                                                                Content="{DynamicResource BtnRemove}"
                                                                 Padding="12,8"
                                                                 HorizontalAlignment="Left"
                                                                 Style="{StaticResource ModernIconButtonStyle}"
@@ -1578,7 +1676,7 @@
                                                       Width="25"
                                                       Height="25"
                                                       Margin="0,0,8,0"/>
-                                                <TextBlock Text="Доступные типы потоков"
+                                                <TextBlock Text="{DynamicResource TitleAvailableFlowTypes}"
                                                            FontWeight="SemiBold"
                                                            FontSize="14"
                                                            Foreground="#2C3E50"/>
@@ -1627,7 +1725,7 @@
                                                 </ListBox>
                                             </Border>
 
-                                            <TextBlock Text="Выберите тип потока из списка для редактирования или удаления"
+                                            <TextBlock Text="{DynamicResource HintSelectFlowTypeToEdit}"
                                                        FontStyle="Italic"
                                                        Foreground="#95A5A6"
                                                        Margin="0,10,0,0"
@@ -1639,7 +1737,7 @@
                         </TabItem>
                     </TabControl>
                 </TabItem>
-                <TabItem Header="Конфигурации" 
+                <TabItem Header="{DynamicResource TabConfigurations}" 
                          Style="{StaticResource ModernTabItemStyle}">
                     <ScrollViewer>
                         <StackPanel Margin="20">
@@ -1651,7 +1749,7 @@
                                               Width="25"
                                               Height="25"
                                               Margin="0,0,8,0"/>
-                                        <TextBlock Text="Выбор интервала"
+                                        <TextBlock Text="{DynamicResource TitleIntervalSelection}"
                                                    FontWeight="SemiBold"
                                                    FontSize="14"
                                                    Foreground="#2C3E50"/>
@@ -1672,12 +1770,12 @@
                                         <Button Grid.Column="1"
                                                 Command="{Binding StructConfigViewModel.LoadFromLibraryCommand}"
                                                 Height="30"
-                                                Content="Обновить библиотеку"
+                                                Content="{DynamicResource BtnUpdateLibrary}"
                                                 Padding="12,8"
                                                 Style="{StaticResource ModernIconButtonStyle}"/>
                                     </Grid>
 
-                                    <TextBlock Text="Выберите временной интервал для редактирования конфигураций"
+                                    <TextBlock Text="{DynamicResource HintSelectInterval}"
                                                FontStyle="Italic"
                                                Foreground="#95A5A6"
                                                Margin="0,10,0,0"/>
@@ -1698,7 +1796,7 @@
                                               Width="25"
                                               Height="25"
                                               Margin="0,0,8,0"/>
-                                        <TextBlock Text="Конфигурации узлов"
+                                        <TextBlock Text="{DynamicResource TitleNodeConfigurations}"
                                                    FontWeight="SemiBold"
                                                    FontSize="14"
                                                    Foreground="#2C3E50"/>
@@ -1740,13 +1838,13 @@
 
                                             <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
                                                 <StackPanel Margin="10">
-                                                    <TextBlock Text="Настройки узла"
+                                                    <TextBlock Text="{DynamicResource TitleNodeSettings}"
                                                                FontWeight="Medium"
                                                                FontSize="13"
                                                                Foreground="#2C3E50"
                                                                Margin="0,0,0,10"/>
 
-                                                    <TextBlock Text="ID узла:"
+                                                    <TextBlock Text="{DynamicResource LblNodeId}"
                                                                FontWeight="Medium"
                                                                Foreground="#2C3E50"
                                                                Margin="0,0,0,4"/>
@@ -1754,7 +1852,7 @@
                                                                Margin="0,0,0,12"/>
 
                                                     <StackPanel Margin="0,0,0,12">
-                                                        <TextBlock Text="Разрешенные процессы:"
+                                                        <TextBlock Text="{DynamicResource LblAllowedProcesses}"
                                                                    FontWeight="Medium"
                                                                    Foreground="#2C3E50"
                                                                    Margin="0,0,0,4"/>
@@ -1810,9 +1908,8 @@
                                                         </ListBox>
                                                     </StackPanel>
 
-                                                    <!-- Входы -->
                                                     <StackPanel Margin="0,0,0,12">
-                                                        <TextBlock Text="Входы:"
+                                                        <TextBlock Text="{DynamicResource LblInputs}"
                                                                   FontWeight="Medium"
                                                                   Foreground="#2C3E50"
                                                                   Margin="0,0,0,4"/>
@@ -1838,8 +1935,8 @@
                                                         </Grid>
 
                                                         <ListBox ItemsSource="{Binding StructConfigViewModel.SelectedNodeConfig.InputVolumes}"
-                                                                Height="120"
-                                                                Margin="0,5,0,0">
+                                                                 Height="120"
+                                                                 Margin="0,5,0,0">
                                                             <ListBox.ItemTemplate>
                                                                 <DataTemplate>
                                                                     <Grid Margin="0,2,0,2">
@@ -1849,48 +1946,53 @@
                                                                             <ColumnDefinition Width="Auto"/>
                                                                         </Grid.ColumnDefinitions>
                                                                         <TextBlock Grid.Column="0" 
-                                                                                  Text="{Binding FlowId}"
-                                                                                  VerticalAlignment="Center"
-                                                                                  Margin="5,0"/>
+                                                                                   Text="{Binding FlowId}"
+                                                                                   VerticalAlignment="Center"
+                                                                                   Margin="5,0"/>
                                                                         <TextBox Grid.Column="1"
-                                                                                Text="{Binding Volume, UpdateSourceTrigger=PropertyChanged}"
-                                                                                Style="{StaticResource ModernTextBoxStyle}"
-                                                                                Margin="5,0"/>
+                                                                                 Text="{Binding Volume, UpdateSourceTrigger=PropertyChanged}"
+                                                                                 Style="{StaticResource ModernTextBoxStyle}"
+                                                                                 Margin="5,0"/>
                                                                         <Button Grid.Column="2"
-                                                                               Command="{Binding DataContext.StructConfigViewModel.SelectedNodeConfig.RemoveInputCommand, 
-                                                                                       RelativeSource={RelativeSource AncestorType=ListBox}}"
-                                                                               CommandParameter="{Binding}"
-                                                                               Content="✕"
-                                                                               Width="24"
-                                                                               Height="24"
-                                                                               Style="{StaticResource ModernIconButtonStyle}"
-                                                                               Padding="2"
-                                                                               Background="Transparent"
-                                                                               BorderThickness="0"/>
+                                                                                Command="{Binding DataContext.StructConfigViewModel.SelectedNodeConfig.RemoveInputCommand, 
+                                                                                        RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                                                                CommandParameter="{Binding}"
+                                                                                Content="✕"
+                                                                                Width="24"
+                                                                                Height="24"
+                                                                                Style="{StaticResource ModernIconButtonStyle}"
+                                                                                Padding="2"
+                                                                                Background="Transparent"
+                                                                                BorderThickness="0"/>
                                                                     </Grid>
                                                                 </DataTemplate>
                                                             </ListBox.ItemTemplate>
                                                         </ListBox>
                                                     </StackPanel>
 
-                                                    <!-- Выходы -->
                                                     <StackPanel Margin="0,0,0,12">
-                                                        <TextBlock Text="Выходы:"
+                                                        <TextBlock Text="{DynamicResource LblOutputs}"
                                                                    FontWeight="Medium"
                                                                    Foreground="#2C3E50"
                                                                    Margin="0,0,0,4"/>
-
-                                                        <StackPanel Orientation="Horizontal">
-                                                            <TextBox Text="{Binding StructConfigViewModel.SelectedNodeConfig.SelectedOutputToAdd, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                                     Width="150"
-                                                                     Style="{StaticResource ModernTextBoxStyle}"
-                                                                     Margin="0,0,5,0"/>
-                                                            <Button Command="{Binding StructConfigViewModel.SelectedNodeConfig.AddOutputCommand}"
-                                                                    Content="+"
-                                                                    Width="30"
-                                                                    Height="30"
-                                                                    Style="{StaticResource ModernIconButtonStyle}"/>
-                                                        </StackPanel>
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            
+                                                                <ComboBox Grid.Column="0"
+                                                                          ItemsSource="{Binding StructConfigViewModel.AvailableFlows}"
+                                                                          SelectedItem="{Binding StructConfigViewModel.SelectedNodeConfig.SelectedOutputToAdd, Mode=TwoWay}"
+                                                                          Style="{StaticResource ModernComboBoxStyle}"
+                                                                          Margin="0,0,5,0"/>
+                                                                <Button Grid.Column="1"
+                                                                        Command="{Binding StructConfigViewModel.SelectedNodeConfig.AddOutputCommand}"
+                                                                        Content="+"
+                                                                        Width="30"
+                                                                        Height="30"
+                                                                        Style="{StaticResource ModernIconButtonStyle}"/>
+                                                        </Grid>
 
                                                         <ListBox ItemsSource="{Binding StructConfigViewModel.SelectedNodeConfig.Outputs}"
                                                                  Height="80"
@@ -1923,9 +2025,8 @@
                                                         </ListBox>
                                                     </StackPanel>
 
-                                                    <!-- Хранилища -->
                                                     <StackPanel Margin="0,0,0,12">
-                                                        <TextBlock Text="Хранилища:"
+                                                        <TextBlock Text="{DynamicResource LblStorages}"
                                                                    FontWeight="Medium"
                                                                    Foreground="#2C3E50"
                                                                    Margin="0,0,0,4"/>
@@ -1992,7 +2093,6 @@
                                 </Grid>
                             </Border>
 
-                            <!-- Управление конфигурациями соединений -->
                             <Border Style="{StaticResource InnerCardStyle}" Margin="0,0,0,15">
                                 <Grid>
                                     <Grid.RowDefinitions>
@@ -2007,7 +2107,7 @@
                                               Width="25"
                                               Height="25"
                                               Margin="0,0,8,0"/>
-                                        <TextBlock Text="Конфигурации соединений"
+                                        <TextBlock Text="{DynamicResource TitleLinkConfigurations}"
                                                    FontWeight="SemiBold"
                                                    FontSize="14"
                                                    Foreground="#2C3E50"/>
@@ -2051,7 +2151,7 @@
 
                                             <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
                                                 <StackPanel Margin="10">
-                                                    <TextBlock Text="Настройки соединения"
+                                                    <TextBlock Text="{DynamicResource TitleLinkSettings}"
                                                                FontWeight="Medium"
                                                                FontSize="13"
                                                                Foreground="#2C3E50"
@@ -2063,14 +2163,14 @@
                                                             <ColumnDefinition Width="*"/>
                                                         </Grid.ColumnDefinitions>
                                                         <StackPanel Grid.Column="0" Margin="0,0,10,0">
-                                                            <TextBlock Text="Узел A:"
+                                                            <TextBlock Text="{DynamicResource LblNodeA}"
                                                                        FontWeight="Medium"
                                                                        Foreground="#2C3E50"
                                                                        Margin="0,0,0,4"/>
                                                             <TextBlock Text="{Binding StructConfigViewModel.SelectedLinkConfig.NodeA, UpdateSourceTrigger=PropertyChanged}"/>
                                                         </StackPanel>
                                                         <StackPanel Grid.Column="1">
-                                                            <TextBlock Text="Узел B:"
+                                                            <TextBlock Text="{DynamicResource LblNodeB}"
                                                                        FontWeight="Medium"
                                                                        Foreground="#2C3E50"
                                                                        Margin="0,0,0,4"/>
@@ -2079,7 +2179,7 @@
                                                     </Grid>
 
                                                     <StackPanel>
-                                                        <TextBlock Text="Разрешенные транспорты:"
+                                                        <TextBlock Text="{DynamicResource LblAllowedTransports}"
                                                                    FontWeight="Medium"
                                                                    Foreground="#2C3E50"
                                                                    Margin="0,0,0,4"/>
@@ -2140,6 +2240,105 @@
                                     </Border>
                                 </Grid>
                             </Border>
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+
+                <TabItem Header="{DynamicResource TabSettings}" 
+                         Style="{StaticResource ModernTabItemStyle}">
+
+                    <ScrollViewer>
+                        <StackPanel Margin="20">
+
+                            <Border Style="{StaticResource InnerCardStyle}" Margin="0,0,0,15">
+                                <StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                                        <Path Data="M12,2 A10,10 0 1 1 11.9,2 Z M4,12 H20 M12,4 A8,8 0 0 0 12,20 M12,4 A8,8 0 0 1 12,20"
+                                              Fill="#3498DB"
+                                              Width="25"
+                                              Height="25"
+                                              Margin="0,0,8,0"/>
+
+                                        <TextBlock Text="{DynamicResource TitleSettingsLanguage}"
+                                                   FontWeight="SemiBold"
+                                                   FontSize="14"
+                                                   Foreground="#2C3E50"/>
+                                    </StackPanel>
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel Grid.Column="0" Margin="0,0,10,0">
+
+                                            <TextBlock Text="{DynamicResource LblSelectLanguage}"
+                                                       FontWeight="Medium"
+                                                       Foreground="#2C3E50"
+                                                       Margin="0,0,0,4"/>
+
+                                            <ComboBox ItemsSource="{Binding SettingsViewModel.AvailableLanguages}"
+                                                      SelectedItem="{Binding SettingsViewModel.SelectedLanguage}"
+                                                      Style="{StaticResource ModernComboBoxStyle}"
+                                                      Height="40"/>
+
+                                            <TextBlock Text="{DynamicResource HintLanguageChange}"
+                                                       FontStyle="Italic"
+                                                       Foreground="#95A5A6"
+                                                       FontSize="11"
+                                                       Margin="0,8,0,0"/>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="1" Margin="10,0,0,0">
+
+                                            <Border Background="#F8F9FA"
+                                                    CornerRadius="6"
+                                                    Padding="12"
+                                                    BorderBrush="#E1E8ED"
+                                                    BorderThickness="1">
+
+                                                <StackPanel>
+                                                    <TextBlock Text="{DynamicResource LblCurrentLanguage}"
+                                                               FontWeight="SemiBold"
+                                                               Foreground="#2C3E50"/>
+
+                                                    <TextBlock Text="{Binding SettingsViewModel.SelectedLanguage}"
+                                                               Foreground="#7F8C8D"
+                                                               Margin="0,6,0,0"/>
+                                                </StackPanel>
+
+                                            </Border>
+
+                                        </StackPanel>
+                                    </Grid>
+
+                                </StackPanel>
+                            </Border>
+
+                            <Border Style="{StaticResource InnerCardStyle}">
+                                <StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                                        <Path Data="M12,8 A4,4 0 1 1 11.9,8 Z M3,12 H6 M18,12 H21 M12,3 V6 M12,18 V21"
+                                              Fill="#27AE60"
+                                              Width="25"
+                                              Height="25"
+                                              Margin="0,0,8,0"/>
+
+                                        <TextBlock Text="{DynamicResource TitleSettingsGeneral}"
+                                                   FontWeight="SemiBold"
+                                                   FontSize="14"
+                                                   Foreground="#2C3E50"/>
+                                    </StackPanel>
+
+                                    <TextBlock Text="{DynamicResource HintMoreSettingsSoon}"
+                                               Foreground="#95A5A6"
+                                               FontStyle="Italic"/>
+                                </StackPanel>
+                            </Border>
+
                         </StackPanel>
                     </ScrollViewer>
                 </TabItem>
