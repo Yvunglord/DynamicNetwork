@@ -40,6 +40,7 @@
     <sys:String x:Key="BtnUndirected">↔ Undirected</sys:String>
     <sys:String x:Key="BtnDirectedLeft">← Directed</sys:String>
     <sys:String x:Key="ChkApplyToAll">Apply to all graphs</sys:String>
+    <sys:String x:Key="ChkApplyToSelected">Apply to selected graphs</sys:String>
     <sys:String x:Key="TxtChangesSavedUntilSessionEnd">Changes are saved until the end of the session</sys:String>
 
     <!-- Analysis Tab -->

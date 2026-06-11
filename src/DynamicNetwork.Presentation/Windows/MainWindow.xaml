@@ -480,13 +480,19 @@
                                         <StackPanel Orientation="Vertical"
                                                     HorizontalAlignment="Center"
                                                     Margin="0,10,0,0">
-
-                                            <CheckBox Content="{DynamicResource ChkApplyToAll}"
-                                                      IsChecked="{Binding ApplyToAllGraphs}"
-                                                      Margin="0,0,0,10"
-                                                      HorizontalAlignment="Center"
-                                                      FontSize="12"/>
-
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <CheckBox Content="{DynamicResource ChkApplyToAll}"
+                                                          IsChecked="{Binding ApplyToAllGraphs, Mode=TwoWay}"
+                                                          Margin="0,0,10,10"
+                                                          HorizontalAlignment="Center"
+                                                          FontSize="12"/>
+                                                <CheckBox Content="{DynamicResource ChkApplyToSelected}"
+                                                          IsChecked="{Binding ApplyToSelectedGraphs, Mode=TwoWay}"
+                                                          Margin="0,0,0,10"
+                                                          HorizontalAlignment="Center"
+                                                          FontSize="12"/>
+                                            </StackPanel>
+                                           
                                             <StackPanel Orientation="Horizontal"
                                                         HorizontalAlignment="Center">
 

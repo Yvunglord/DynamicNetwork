@@ -4,7 +4,9 @@
     <meta charset="utf-8" />
     <title>Graph Visualizer</title>
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="cytoscape-context-menus.css" />
     <script src="cytoscape.min.js"></script>
+    <script src="cytoscape-context-menus.js"></script>
 </head>
 <body>
     <div id="cy"></div>
@@ -50,6 +52,47 @@
             layout: { name: 'grid', rows: 1 },
             minZoom: 0.2,
             maxZoom: 3
+        });
+
+        var contextMenu = cy.contextMenus({
+            menuItems: [
+                {
+                    id: 'edit-node',
+                    content: 'Редактировать...',
+                    selector: 'node',
+                    submenu: [
+                        {
+                            id: 'change-name',
+                            content: 'Изменить имя',
+                            onClickFunction: function (event) {
+                                var node = event.target || event.cyTarget;
+                                var newLabel = prompt("Новое имя:", node.data('label'));
+                                if (newLabel) node.data('label', newLabel);
+                            }
+                        },
+                        {
+                            id: 'set-color',
+                            content: 'Установить цвет',
+                            submenu: [
+                                {
+                                    id: 'color-red',
+                                    content: 'Красный',
+                                    onClickFunction: function (event) {
+                                        (event.target || event.cyTarget).style('background-color', '#ef4444');
+                                    }
+                                },
+                                {
+                                    id: 'color-green',
+                                    content: 'Зеленый',
+                                    onClickFunction: function (event) {
+                                        (event.target || event.cyTarget).style('background-color', '#10c939');
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
         });
 
         window.chrome.webview.addEventListener('message', (event) => {
@@ -166,7 +209,7 @@
             }
         });
 
-        cy.on('tap', 'node', function(evt){
+        cy.on('tap', 'node', function (evt) {
             const node = evt.target;
             window.chrome.webview.postMessage(JSON.stringify({
                 type: 'NODE_CLICKED',

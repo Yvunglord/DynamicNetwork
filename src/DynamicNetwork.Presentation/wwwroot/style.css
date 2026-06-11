@@ -11,3 +11,23 @@
     height: 100vh;
     display: block;
 }
+
+.cy-context-menus-cxt-menu-item.cy-context-menus-has-submenu::after {
+    content: '▶';
+    float: right;
+    font-size: 10px;
+    margin-left: 10px;
+    line-height: 20px;
+}
+
+.cy-context-menus-submenu {
+    display: none;
+    position: absolute;
+    background-color: #2d2d2d;
+    border: 1px solid #444;
+    z-index: 1000;
+}
+
+.cy-context-menus-cxt-menu-item:hover > .cy-context-menus-submenu {
+    display: block;
+}

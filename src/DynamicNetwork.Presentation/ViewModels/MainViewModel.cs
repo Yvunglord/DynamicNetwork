@@ -47,6 +47,7 @@ public class MainViewModel : ViewModelBase
     private SettingsViewModel? _settingsViewModel;
     private string? _currentSessionId;
     private bool _applyToAllGraphs = false;
+    private bool _applyToSelectedGraphs = false;
 
     public IDialogService DialogService => _dialogService;
 
@@ -85,7 +86,27 @@ public class MainViewModel : ViewModelBase
     public bool ApplyToAllGraphs
     {
         get => _applyToAllGraphs;
-        set => SetField(ref _applyToAllGraphs, value);
+        set
+        {
+            if (_applyToSelectedGraphs)
+            {
+                ApplyToSelectedGraphs = false;
+            }
+            SetField(ref _applyToAllGraphs, value);
+        } 
+    }
+
+    public bool ApplyToSelectedGraphs
+    {
+        get => _applyToSelectedGraphs;
+        set
+        {
+            if (_applyToAllGraphs)
+            { 
+                ApplyToAllGraphs = false;
+            }
+            SetField(ref _applyToSelectedGraphs, value);
+        } 
     }
 
     public TopologyReachabilityViewModel ReachabilityViewModel

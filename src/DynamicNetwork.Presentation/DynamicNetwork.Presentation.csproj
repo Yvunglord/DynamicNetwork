@@ -9,12 +9,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="wwwroot\cytoscape-context-menus.css" />
+    <None Remove="wwwroot\cytoscape-context-menus.js" />
     <None Remove="wwwroot\cytoscape.min.js" />
     <None Remove="wwwroot\index.html" />
     <None Remove="wwwroot\style.css" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="wwwroot\cytoscape-context-menus.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="wwwroot\cytoscape-context-menus.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="wwwroot\cytoscape.min.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

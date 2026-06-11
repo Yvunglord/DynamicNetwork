@@ -40,6 +40,7 @@
     <sys:String x:Key="BtnUndirected">↔ Ненаправленное</sys:String>
     <sys:String x:Key="BtnDirectedLeft">← Направленное</sys:String>
     <sys:String x:Key="ChkApplyToAll">Ко всем</sys:String>
+    <sys:String x:Key="ChkApplyToSelected">К выбранным</sys:String>
     <sys:String x:Key="TxtChangesSavedUntilSessionEnd">Изменения сохраняются до конца сессии</sys:String>
 
     <!-- Analysis Tab -->
